@@ -82,7 +82,7 @@ export default function Home() {
           layout
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 whitespace-nowrap pt-20 pb-4">
+          <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pt-10 md:pt-20 pb-4">
             YouTube Playlist Summarizer
           </h1>
           <p className="mt-8 font-normal text-base text-neutral-300 max-w-lg mx-auto">
