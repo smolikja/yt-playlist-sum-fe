@@ -5,7 +5,8 @@ import { useSummarize } from "@/hooks/use-summarize";
 import { InputWithGlow } from "@/components/ui/input-with-glow";
 import { MagicButton } from "@/components/ui/magic-button";
 import { Spotlight } from "@/components/ui/spotlight";
-import { MoveRight, Sparkles, Loader2, Youtube } from "lucide-react";
+import { BorderBeam } from "@/components/ui/border-beam";
+import { Sparkles, Loader2, Youtube, X } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +14,10 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Home() {
   const [url, setUrl] = useState("");
   const { mutate, isPending, data, error } = useSummarize();
+
+  // Track successful URL to toggle visibility
+  const [lastSummarizedUrl, setLastSummarizedUrl] = useState<string | null>(null);
+  const [showSummary, setShowSummary] = useState(false);
 
   // Simulated loading steps
   const [loadingStep, setLoadingStep] = useState(0);
@@ -29,8 +34,9 @@ export default function Home() {
       return;
     }
 
-    // Reset state
+    // If new URL or re-summarizing, reset and start
     setLoadingStep(0);
+    setShowSummary(false); // Hide potentially old summary first
 
     // Start simulation
     const interval = setInterval(() => {
@@ -40,6 +46,8 @@ export default function Home() {
     mutate(url, {
       onSuccess: () => {
         clearInterval(interval);
+        setLastSummarizedUrl(url);
+        setShowSummary(true);
         toast.success("Summary generated successfully!");
       },
       onError: (err) => {
@@ -49,26 +57,36 @@ export default function Home() {
     });
   };
 
+  // derived state for button text/icon
+  const isShowingCurrentSummary = showSummary && url === lastSummarizedUrl && !!data;
+
   return (
-    <div className="min-h-screen w-full rounded-md flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
+    <div className="min-h-screen w-full flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
         fill="white"
       />
 
-      <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
-        <div className="text-center mb-12">
+      <motion.div
+        layout
+        className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0"
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      >
+        <motion.div
+          layout
+          className="text-center mb-12"
+        >
           <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
             Playlist <br /> Summarizer
           </h1>
           <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg mx-auto">
             Transform hours of video content into concise, actionable summaries using advanced AI. Just paste your YouTube playlist URL below.
           </p>
-        </div>
+        </motion.div>
 
         <div className="max-w-xl mx-auto space-y-8">
           {/* Input Section */}
-          <div className="relative z-10">
+          <motion.div layout className="relative z-10">
             <InputWithGlow
               placeholder="https://www.youtube.com/playlist?list=..."
               value={url}
@@ -101,18 +119,33 @@ export default function Home() {
                 />
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Result Section */}
-          <AnimatePresence>
-            {data && (
+          <AnimatePresence mode="popLayout">
+            {isShowingCurrentSummary && data && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
+                layout
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 350,
+                  damping: 25,
+                  duration: 0.4
+                }}
                 className="w-full"
               >
-                <div className="bg-neutral-900/50 border border-neutral-800 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                <div className="bg-neutral-900/50 border border-neutral-800 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-2xl relative overflow-hidden group">
+                  {/* Border Beam Effect - Dynamic Duration */}
+                  {/* Base 15s + 1s per 100 characters of summary */}
+                  <BorderBeam
+                    size={300}
+                    duration={Math.max(20, 15 + (data.summary_markdown.length / 100))}
+                    delay={0}
+                  />
+
                   {/* Gradient Overlay */}
                   <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
 
@@ -141,7 +174,7 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-      </div>
+      </motion.div>
     </div>
   );
 }
