@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
       <Spotlight
-        className="-top-40 left-0 md:left-60 md:-top-20"
+        className="-top-40 left-0 md:left-60 md:-top-20 fixed"
         fill="white"
       />
 
