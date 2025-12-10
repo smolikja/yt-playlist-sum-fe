@@ -10,6 +10,7 @@ import { Sparkles, Loader2, Youtube, X } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChatContainer } from "@/components/chat/chat-container";
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -180,12 +181,20 @@ export default function Home() {
                     </ReactMarkdown>
                   </div>
                 </div>
+
               </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Chat Section */}
+          <AnimatePresence>
+            {isShowingCurrentSummary && data && (
+              <ChatContainer conversationId={data.conversation_id} />
             )}
           </AnimatePresence>
         </div>
 
-      </motion.div>
-    </div>
+      </motion.div >
+    </div >
   );
 }
