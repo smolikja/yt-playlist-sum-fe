@@ -19,7 +19,7 @@ export function ChatContainer({ conversationId }: ChatContainerProps) {
         >
             <div className="flex flex-col gap-6">
                 <MessageList messages={messages} isLoading={isLoading} />
-                <ChatInput onSend={submitMessage} isLoading={isLoading} />
+                <ChatInput onSend={submitMessage} isLoading={isLoading} isEmpty={messages.length === 0} />
             </div>
         </motion.div>
     );
