@@ -57,6 +57,12 @@ export default function Home() {
     });
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !isPending) {
+      handleSubmit();
+    }
+  };
+
   // derived state for button text/icon
   const isShowingCurrentSummary = showSummary && url === lastSummarizedUrl && !!data;
 
@@ -76,10 +82,10 @@ export default function Home() {
           layout
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
-            Playlist <br /> Summarizer
+          <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 whitespace-nowrap pt-20 pb-4">
+            YouTube Playlist Summarizer
           </h1>
-          <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg mx-auto">
+          <p className="mt-8 font-normal text-base text-neutral-300 max-w-lg mx-auto">
             Transform hours of video content into concise, actionable summaries using advanced AI. Just paste your YouTube playlist URL below.
           </p>
         </motion.div>
@@ -91,6 +97,7 @@ export default function Home() {
               placeholder="https://www.youtube.com/playlist?list=..."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
+              onKeyDown={handleKeyDown}
               disabled={isPending}
             />
 
@@ -150,7 +157,12 @@ export default function Home() {
                   <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
 
                   {/* Header */}
-                  <div className="flex items-center gap-3 mb-6 border-b border-neutral-800 pb-4">
+                  <a
+                    href={lastSummarizedUrl || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 mb-6 border-b border-neutral-800 pb-4 hover:bg-white/5 transition-colors p-2 rounded-md -mx-2"
+                  >
                     <Youtube className="w-6 h-6 text-red-500" />
                     <div>
                       <h2 className="text-lg font-semibold text-white">
@@ -160,8 +172,7 @@ export default function Home() {
                         {data.video_count} videos analyzed
                       </p>
                     </div>
-                  </div>
-
+                  </a>
                   {/* Markdown Content */}
                   <div className="prose prose-invert prose-indigo max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-p:text-neutral-300 prose-li:text-neutral-300">
                     <ReactMarkdown>
