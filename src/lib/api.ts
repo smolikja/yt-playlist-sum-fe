@@ -72,13 +72,13 @@ export async function summarizePlaylist(url: string): Promise<SummaryResult> {
 /**
  * Sends a chat message to the LLM within the context of a conversation.
  */
-export async function sendMessage(conversationId: string, message: string): Promise<ChatResponse> {
+export async function sendMessage(conversationId: string, message: string, useTranscripts: boolean): Promise<ChatResponse> {
     return fetchAPI<ChatResponse>("/api/v1/chat", {
         method: "POST",
         body: JSON.stringify({
             conversation_id: conversationId,
             message,
-            use_transcripts: false, // Default to false for now, can be exposed later
+            use_transcripts: useTranscripts,
         } as ChatRequest),
     });
 }
