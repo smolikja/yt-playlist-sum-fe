@@ -90,9 +90,9 @@ export default function Home() {
           </p>
         </motion.div>
 
-        <div className="max-w-xl mx-auto space-y-8">
+        <div className="w-full space-y-8">
           {/* Input Section */}
-          <motion.div layout className="relative z-10">
+          <motion.div layout className="relative z-10 max-w-xl mx-auto">
             <InputWithGlow
               placeholder="https://www.youtube.com/playlist?list=..."
               value={url}
@@ -142,7 +142,7 @@ export default function Home() {
                   damping: 25,
                   duration: 0.4
                 }}
-                className="w-full"
+                className="w-full max-w-4xl mx-auto"
               >
                 <div className="bg-neutral-900/50 border border-neutral-800 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-2xl relative overflow-hidden group">
                   {/* Border Beam Effect - Dynamic Duration */}
@@ -174,7 +174,7 @@ export default function Home() {
                     </div>
                   </a>
                   {/* Markdown Content */}
-                  <div className="prose prose-invert prose-indigo max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-p:text-neutral-300 prose-li:text-neutral-300">
+                  <div className="prose prose-lg prose-invert prose-indigo max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-p:text-neutral-300 prose-li:text-neutral-300">
                     <ReactMarkdown>
                       {data.summary_markdown}
                     </ReactMarkdown>
