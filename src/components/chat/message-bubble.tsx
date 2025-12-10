@@ -2,14 +2,15 @@ import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { User, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { Role } from "@/lib/types";
 
 interface MessageBubbleProps {
-    role: "user" | "ai";
+    role: Role;
     content: string;
 }
 
 export function MessageBubble({ role, content }: MessageBubbleProps) {
-    const isUser = role === "user";
+    const isUser = role === Role.USER;
 
     return (
         <motion.div

@@ -19,9 +19,19 @@ export interface ChatResponse {
   response: string;
 }
 
+export enum Role {
+  USER = "user",
+  AI = "ai",
+}
+
+export interface MessageButton {
+  label: string;
+  action: string;
+}
+
 export interface MessageResponse {
   id: number;
-  role: string;
+  role: Role;
   content: string;
   created_at: string;
 }

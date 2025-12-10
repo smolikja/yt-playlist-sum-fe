@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { sendMessage } from "@/lib/api";
+import { Role } from "@/lib/types";
 
 export interface Message {
-    role: "user" | "ai";
+    role: Role;
     content: string;
 }
 
@@ -22,7 +23,7 @@ export function useChat({ conversationId }: UseChatProps) {
         onSuccess: (data) => {
             setMessages((prev) => [
                 ...prev,
-                { role: "ai", content: data.response },
+                { role: Role.AI, content: data.response },
             ]);
         },
         onError: (error) => {
@@ -31,7 +32,7 @@ export function useChat({ conversationId }: UseChatProps) {
             // For now, let's just append an error message system-side
             setMessages((prev) => [
                 ...prev,
-                { role: "ai", content: "Sorry, I encountered an error responding to your message." },
+                { role: Role.AI, content: "Sorry, I encountered an error responding to your message." },
             ]);
         },
     });
@@ -40,7 +41,7 @@ export function useChat({ conversationId }: UseChatProps) {
         if (!message.trim()) return;
 
         // Optimistic update: Add user message immediately
-        setMessages((prev) => [...prev, { role: "user", content: message }]);
+        setMessages((prev) => [...prev, { role: Role.USER, content: message }]);
 
         // Trigger API call
         sendMessageMutation(message);
