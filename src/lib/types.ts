@@ -1,0 +1,52 @@
+export interface PlaylistRequest {
+  url: string;
+}
+
+export interface SummaryResult {
+  playlist_title: string | null;
+  video_count: number;
+  summary_markdown: string;
+  conversation_id: string;
+}
+
+export interface ChatRequest {
+  conversation_id: string;
+  message: string;
+  use_transcripts?: boolean;
+}
+
+export interface ChatResponse {
+  response: string;
+}
+
+export interface MessageResponse {
+  id: number;
+  role: string;
+  content: string;
+  created_at: string;
+}
+
+export interface ConversationResponse {
+  id: string;
+  title: string | null;
+  summary_snippet: string | null;
+  created_at: string;
+}
+
+export interface ConversationDetailResponse {
+  id: string;
+  title: string | null;
+  summary: string;
+  created_at: string;
+  messages: MessageResponse[];
+}
+
+export interface ValidationError {
+  loc: (string | number)[];
+  msg: string;
+  type: string;
+}
+
+export interface HTTPValidationError {
+  detail: ValidationError[];
+}
