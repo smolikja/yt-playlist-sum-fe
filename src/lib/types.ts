@@ -41,6 +41,7 @@ export interface ConversationResponse {
   title: string | null;
   summary_snippet: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export interface ConversationDetailResponse {
@@ -59,4 +60,34 @@ export interface ValidationError {
 
 export interface HTTPValidationError {
   detail: ValidationError[];
+}
+
+export interface UserCreate {
+  email: string;
+  password: string;
+  is_active?: boolean;
+  is_superuser?: boolean;
+  is_verified?: boolean;
+}
+
+export interface UserRead {
+  id: string;
+  email: string;
+  is_active: boolean;
+  is_superuser: boolean;
+  is_verified: boolean;
+}
+
+export interface Body_auth_jwt_login_auth_jwt_login_post {
+  username: string;
+  password: string;
+  grant_type?: string | null;
+  scope?: string;
+  client_id?: string | null;
+  client_secret?: string | null;
+}
+
+export interface BearerResponse {
+  access_token: string;
+  token_type: string;
 }

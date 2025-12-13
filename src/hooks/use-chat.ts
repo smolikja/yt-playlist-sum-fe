@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { sendMessage } from "@/lib/api";
 import { Role } from "@/lib/types";
 
@@ -10,10 +10,19 @@ export interface Message {
 
 interface UseChatProps {
     conversationId: string;
+    initialMessages?: Message[];
 }
 
-export function useChat({ conversationId }: UseChatProps) {
-    const [messages, setMessages] = useState<Message[]>([]);
+export function useChat({ conversationId, initialMessages = [] }: UseChatProps) {
+    const queryClient = useQueryClient();
+    const [messages, setMessages] = useState<Message[]>(initialMessages);
+
+    // Sync initialMessages if they change (e.g. after fetch)
+    useEffect(() => {
+        if (initialMessages) {
+            setMessages(initialMessages);
+        }
+    }, [initialMessages]);
 
     const { mutate: sendMessageMutation, isPending: isLoading } = useMutation({
         mutationFn: async ({ message, useTranscripts }: { message: string; useTranscripts: boolean }) => {
@@ -25,6 +34,8 @@ export function useChat({ conversationId }: UseChatProps) {
                 ...prev,
                 { role: Role.AI, content: data.response },
             ]);
+            // Invalidate conversations list so it re-sorts by updated_at
+            queryClient.invalidateQueries({ queryKey: ["conversations"] });
         },
         onError: (error) => {
             console.error("Failed to send message:", error);

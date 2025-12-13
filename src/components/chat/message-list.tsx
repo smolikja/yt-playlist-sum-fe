@@ -5,16 +5,28 @@ import { MessageBubble } from "./message-bubble";
 interface MessageListProps {
     messages: Message[];
     isLoading: boolean;
+    conversationId: string;
 }
 
-export function MessageList({ messages, isLoading }: MessageListProps) {
+export function MessageList({ messages, isLoading, conversationId }: MessageListProps) {
     const bottomRef = useRef<HTMLDivElement>(null);
+    const prevConversationIdRef = useRef(conversationId);
 
     useEffect(() => {
+        const isConversationChange = prevConversationIdRef.current !== conversationId;
+        const behavior = isConversationChange ? "instant" : "smooth"; // 'auto' is effectively instant
+
+        // Ensure we scroll if there are messages or if loading
         if (messages.length > 0 || isLoading) {
-            bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+            // Use 'auto' instead of 'instant' for better compatibility if needed, 
+            // but 'instant' is supported in modern browsers for scrollIntoView options 
+            // (though TS might complain about ScrollBehavior). 
+            // Actually, for scrollIntoView, the values are "auto" | "smooth". "auto" is instant.
+            bottomRef.current?.scrollIntoView({ behavior: behavior === "instant" ? "auto" : "smooth" });
         }
-    }, [messages, isLoading]);
+
+        prevConversationIdRef.current = conversationId;
+    }, [messages, isLoading, conversationId]);
 
     return (
         <div className="w-full space-y-6 px-4">

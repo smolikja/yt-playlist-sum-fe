@@ -1,14 +1,15 @@
-import { useChat } from "@/hooks/use-chat";
+import { useChat, Message } from "@/hooks/use-chat";
 import { MessageList } from "./message-list";
 import { ChatInput } from "./chat-input";
 import { motion } from "framer-motion";
 
 interface ChatContainerProps {
     conversationId: string;
+    initialMessages?: Message[];
 }
 
-export function ChatContainer({ conversationId }: ChatContainerProps) {
-    const { messages, isLoading, submitMessage } = useChat({ conversationId });
+export function ChatContainer({ conversationId, initialMessages }: ChatContainerProps) {
+    const { messages, isLoading, submitMessage } = useChat({ conversationId, initialMessages });
 
     return (
         <motion.div
@@ -18,7 +19,7 @@ export function ChatContainer({ conversationId }: ChatContainerProps) {
             className="mx-auto mt-12 w-full max-w-4xl"
         >
             <div className="flex flex-col gap-6">
-                <MessageList messages={messages} isLoading={isLoading} />
+                <MessageList messages={messages} isLoading={isLoading} conversationId={conversationId} />
                 <ChatInput onSend={submitMessage} isLoading={isLoading} isEmpty={messages.length === 0} />
             </div>
         </motion.div>
