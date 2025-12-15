@@ -8,9 +8,10 @@ interface ChatInputProps {
     onSend: (message: string, useTranscripts: boolean) => void;
     isLoading: boolean;
     isEmpty: boolean;
+    onInteract?: () => void;
 }
 
-export function ChatInput({ onSend, isLoading, isEmpty }: ChatInputProps) {
+export function ChatInput({ onSend, isLoading, isEmpty, onInteract }: ChatInputProps) {
     const [input, setInput] = useState("");
     const [isFastMode, setIsFastMode] = useState(true);
 
@@ -25,6 +26,13 @@ export function ChatInput({ onSend, isLoading, isEmpty }: ChatInputProps) {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             handleSend();
+        }
+    };
+    
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (onInteract) {
+            e.target.blur();
+            onInteract();
         }
     };
 
@@ -80,6 +88,7 @@ export function ChatInput({ onSend, isLoading, isEmpty }: ChatInputProps) {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
+                            onFocus={handleFocus}
                             placeholder={isFastMode ? "Ask a quick question..." : "Ask a detailed question..."}
                             disabled={isLoading}
                             className={cn(

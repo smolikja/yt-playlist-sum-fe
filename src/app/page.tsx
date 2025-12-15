@@ -14,7 +14,6 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChatContainer } from "@/components/chat/chat-container";
-import { LockedChatOverlay } from "@/components/chat/locked-chat-overlay";
 import { AuthModal } from "@/components/auth/auth-modal";
 import { Button } from "@/components/ui/button";
 import { Sidebar, MobileSidebar } from "@/components/chat/sidebar";
@@ -413,7 +412,11 @@ export default function Home() {
                                           />
                                       )
                                   ) : (
-                                      <LockedChatOverlay onClaim={() => setAuthModalOpen(true)} />
+                                      <ChatContainer 
+                                          conversationId={activeConversationId!} 
+                                          initialMessages={initialMessages}
+                                          onInteract={() => setAuthModalOpen(true)}
+                                      />
                                   )}
                               </div>
                           ) : (
