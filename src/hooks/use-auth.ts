@@ -27,7 +27,7 @@ export function useAuth() {
   const logout = () => {
     removeAccessToken();
     queryClient.setQueryData(["currentUser"], null);
-    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    queryClient.removeQueries({ queryKey: ["currentUser"] });
   };
 
   return {

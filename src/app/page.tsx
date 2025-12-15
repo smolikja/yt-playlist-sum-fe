@@ -224,7 +224,7 @@ export default function Home() {
 
                    {/* Mobile Menu Trigger */}
 
-                  <div className="pointer-events-auto">
+                  <div className="pointer-events-auto flex items-center gap-2">
 
                       {isAuthenticated && (
 
@@ -234,6 +234,20 @@ export default function Home() {
 
                           </Button>
 
+                      )}
+
+                      {(!isAuthenticated && isDetailView) && (
+                          <Button 
+                            variant="ghost" 
+                            onClick={() => {
+                                setActiveConversationId(null);
+                                setUrl("");
+                            }}
+                            className="text-neutral-400 hover:text-white"
+                          >
+                              <Sparkles className="w-4 h-4 mr-2" />
+                              New Summary
+                          </Button>
                       )}
 
                   </div>
@@ -279,22 +293,12 @@ export default function Home() {
   
 
               <motion.div
-
-                  layout
-
-                  className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-10 h-full flex flex-col"
-
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-
-              >
-
-              <motion.div
                   layout
                   className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-10 h-full flex flex-col"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                   <AnimatePresence mode="wait">
-                  {( (!isAuthenticated || !isDetailView) ) && (
+                  { !isDetailView && (
                       <motion.div 
                           key="hero-section"
                           layout
@@ -419,8 +423,6 @@ export default function Home() {
                       </motion.div>
                   )}
                   </AnimatePresence>
-
-              </motion.div>
 
               </motion.div>
 
