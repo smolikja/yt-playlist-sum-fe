@@ -34,10 +34,14 @@ export default function Home() {
   // Fetch active conversation details
   const { data: conversationData, isLoading: isLoadingConversation } = useConversation(activeConversationId || "");
 
-  const handleLogout = () => {
-    logout();
+  const handleNewChat = () => {
     setActiveConversationId(null);
     setUrl("");
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleNewChat();
   };
 
   // Auth Modal State
@@ -170,7 +174,7 @@ export default function Home() {
 
                   onSelect={setActiveConversationId} 
 
-                  onNewChat={() => setActiveConversationId(null)}
+                  onNewChat={handleNewChat}
                   
                   onDelete={handleDeleteConversation}
 
@@ -196,7 +200,7 @@ export default function Home() {
 
               onSelect={setActiveConversationId}
 
-              onNewChat={() => setActiveConversationId(null)}
+              onNewChat={handleNewChat}
               
               onDelete={handleDeleteConversation}
 
@@ -239,10 +243,7 @@ export default function Home() {
                       {(!isAuthenticated && isDetailView) && (
                           <Button 
                             variant="ghost" 
-                            onClick={() => {
-                                setActiveConversationId(null);
-                                setUrl("");
-                            }}
+                            onClick={handleNewChat}
                             className="text-neutral-400 hover:text-white"
                           >
                               <Sparkles className="w-4 h-4 mr-2" />
