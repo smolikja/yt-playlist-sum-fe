@@ -16,7 +16,7 @@ export function ChatContainer({ conversationId, initialMessages }: ChatContainer
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mx-auto mt-12 w-full max-w-4xl"
+            className="mx-auto mt-6 w-full max-w-4xl"
         >
             <div className="flex flex-col gap-6">
                 <MessageList messages={messages} isLoading={isLoading} conversationId={conversationId} />

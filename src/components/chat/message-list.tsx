@@ -30,12 +30,7 @@ export function MessageList({ messages, isLoading, conversationId }: MessageList
 
     return (
         <div className="w-full space-y-6 px-4">
-            {/* Intro Message */}
-            {messages.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-10 text-center text-muted-foreground opacity-50">
-                    <p className="text-sm">Ask questions about the playlist content...</p>
-                </div>
-            )}
+            {/* Intro Message - Removed */}
 
             {messages.map((msg, index) => (
                 <MessageBubble key={index} role={msg.role} content={msg.content} />
