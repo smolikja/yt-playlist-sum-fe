@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSummarize } from "@/hooks/use-summarize";
 import { useAuth } from "@/hooks/use-auth";
 import { useClaimConversation } from "@/hooks/use-claim";
@@ -33,6 +33,12 @@ export default function Home() {
 
   // Fetch active conversation details
   const { data: conversationData, isLoading: isLoadingConversation } = useConversation(activeConversationId || "");
+
+  const handleLogout = () => {
+    logout();
+    setActiveConversationId(null);
+    setUrl("");
+  };
 
   // Auth Modal State
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
@@ -246,11 +252,11 @@ export default function Home() {
 
                               </div>
 
-                              <Button variant="ghost" size="icon" onClick={logout} title="Sign Out">
+                                                            <Button variant="ghost" size="icon" onClick={handleLogout} title="Sign Out">
 
-                                  <LogOut className="w-5 h-5 text-neutral-400 hover:text-white" />
+                                                                <LogOut className="w-5 h-5 text-neutral-400 hover:text-white" />
 
-                              </Button>
+                                                            </Button>
 
                           </>
 
@@ -282,18 +288,23 @@ export default function Home() {
 
               >
 
+                  <AnimatePresence mode="wait">
+
                   {!isDetailView ? (
 
                        /* ---------------- NEW SUMMARY VIEW ---------------- */
 
-                      <div className="flex flex-col items-center justify-center flex-1">
+                      <motion.div 
+                          key="new-summary"
+                          initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                          exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                          transition={{ duration: 0.35, ease: "easeInOut" }}
+                          className="flex flex-col items-center justify-center flex-1 w-full"
+                      >
 
-                          <motion.div
-
-                          layout
-
+                          <div
                           className="text-center mb-12"
-
                           >
 
                           <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-4">
@@ -308,11 +319,11 @@ export default function Home() {
 
                           </p>
 
-                          </motion.div>
+                          </div>
 
   
 
-                          <motion.div layout className="relative z-10 max-w-xl mx-auto w-full">
+                          <div className="relative z-10 max-w-xl mx-auto w-full">
 
                               <InputWithGlow
 
@@ -380,15 +391,22 @@ export default function Home() {
 
                               </div>
 
-                          </motion.div>
+                          </div>
 
-                      </div>
+                      </motion.div>
 
                   ) : (
 
                       /* ---------------- DETAIL VIEW (Summary + Chat) ---------------- */
 
-                      <div className="w-full max-w-4xl mx-auto pb-10">
+                      <motion.div 
+                          key="detail-view"
+                          initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                          exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                          transition={{ duration: 0.35, ease: "easeInOut" }}
+                          className="w-full max-w-4xl mx-auto pb-10"
+                      >
 
                           {(isLoadingConversation && !isJustSummarized) ? (
 
@@ -400,15 +418,7 @@ export default function Home() {
 
                           ) : (displaySummary) ? (
 
-                              <motion.div
-
-                                  initial={{ opacity: 0, y: 20 }}
-
-                                  animate={{ opacity: 1, y: 0 }}
-
-                                  transition={{ duration: 0.4 }}
-
-                              >
+                              <div>
 
                                   {/* Summary Card */}
 
@@ -494,7 +504,7 @@ export default function Home() {
 
                                   )}
 
-                              </motion.div>
+                              </div>
 
                           ) : (
 
@@ -506,9 +516,11 @@ export default function Home() {
 
                           )}
 
-                      </div>
+                      </motion.div>
 
                   )}
+
+                  </AnimatePresence>
 
               </motion.div>
 
