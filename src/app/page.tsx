@@ -288,238 +288,133 @@ export default function Home() {
 
               >
 
-                  <AnimatePresence mode="wait">
-
-                  {!isDetailView ? (
-
-                       /* ---------------- NEW SUMMARY VIEW ---------------- */
-
+                  <AnimatePresence>
+                  {( (!isAuthenticated || !isDetailView) ) && (
                       <motion.div 
-                          key="new-summary"
+                          key="hero-section"
+                          layout
                           initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                           exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                           transition={{ duration: 0.35, ease: "easeInOut" }}
-                          className="flex flex-col items-center justify-center flex-1 w-full"
+                          className={`flex flex-col items-center w-full transition-all duration-500 ${!isDetailView ? "flex-1 justify-center" : "mb-12 mt-8"}`}
                       >
 
-                          <div
-                          className="text-center mb-12"
-                          >
-
-                          <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-4">
-
-                              YouTube Playlist Summarizer
-
-                          </h1>
-
-                          <p className="mt-8 font-normal text-base text-neutral-300 max-w-lg mx-auto">
-
-                              Transform hours of video content into concise, actionable summaries using advanced AI. Just paste your YouTube playlist URL below.
-
-                          </p>
-
-                          </div>
-
+                          <motion.div layout className="text-center mb-12">
+                            <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-4">
+                                YouTube Playlist Summarizer
+                            </h1>
+                            <p className="mt-8 font-normal text-base text-neutral-300 max-w-lg mx-auto">
+                                Transform hours of video content into concise, actionable summaries using advanced AI. Just paste your YouTube playlist URL below.
+                            </p>
+                          </motion.div>
   
 
-                          <div className="relative z-10 max-w-xl mx-auto w-full">
-
+                          <motion.div layout className="relative z-10 max-w-xl mx-auto w-full">
                               <InputWithGlow
-
                               placeholder="https://www.youtube.com/playlist?list=..."
-
                               value={url}
-
                               onChange={(e) => setUrl(e.target.value)}
-
                               onKeyDown={handleKeyDown}
-
                               disabled={isPending}
-
                               />
-
   
-
                               <div className="mt-6 flex justify-center">
-
                               {isPending ? (
-
                                   <div className="flex flex-col items-center space-y-4 w-full">
-
                                   <div className="w-full h-1 bg-neutral-800 rounded-full overflow-hidden">
-
                                       <motion.div
-
                                       className="h-full bg-indigo-500"
-
                                       initial={{ width: "0%" }}
-
                                       animate={{ width: `${((loadingStep + 1) / loadingSteps.length) * 100}%` }}
-
                                       transition={{ duration: 0.5 }}
-
                                       />
-
                                   </div>
-
                                   <p className="text-sm text-neutral-400 animate-pulse flex items-center gap-2">
-
                                       <Loader2 className="w-4 h-4 animate-spin" />
-
                                       {loadingSteps[loadingStep]}
-
                                   </p>
-
                                   </div>
-
                               ) : (
-
                                   <MagicButton
-
                                   title="Summarize Playlist"
-
                                   icon={<Sparkles className="w-4 h-4" />}
-
                                   position="right"
-
                                   handleClick={handleSubmit}
-
                                   />
-
                               )}
-
                               </div>
-
-                          </div>
-
+                          </motion.div>
                       </motion.div>
+                  )}
+                  </AnimatePresence>
 
-                  ) : (
-
-                      /* ---------------- DETAIL VIEW (Summary + Chat) ---------------- */
-
+                  <AnimatePresence>
+                  {isDetailView && (
                       <motion.div 
                           key="detail-view"
-                          initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-                          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                          exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-                          transition={{ duration: 0.35, ease: "easeInOut" }}
+                          initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                          exit={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                          transition={{ duration: 0.35, ease: "easeInOut", delay: 0.1 }}
                           className="w-full max-w-4xl mx-auto pb-10"
                       >
-
                           {(isLoadingConversation && !isJustSummarized) ? (
-
                                <div className="flex h-64 items-center justify-center">
-
                                   <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-
                               </div>
-
                           ) : (displaySummary) ? (
-
                               <div>
-
                                   {/* Summary Card */}
-
                                   <div className="bg-neutral-900/50 border border-neutral-800 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-2xl relative overflow-hidden group mb-8">
-
                                       <BorderBeam size={300} duration={20} delay={0} />
-
                                       <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
-
   
-
                                       <div className="flex items-center gap-3 mb-6 border-b border-neutral-800 pb-4">
-
                                           <Youtube className="w-6 h-6 text-red-500" />
-
                                           <div>
-
                                               <h2 className="text-lg font-semibold text-white">
-
                                                   {displayTitle}
-
                                               </h2>
-
                                               <p className="text-xs text-neutral-400">
-
                                                   {displayDate}
-
                                               </p>
-
                                           </div>
-
                                       </div>
-
                                       
-
                                       <div className="prose prose-lg prose-invert prose-indigo max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-p:text-neutral-300 prose-li:text-neutral-300">
-
                                           <ReactMarkdown>
-
                                           {displaySummary}
-
                                           </ReactMarkdown>
-
                                       </div>
-
                                   </div>
-
   
-
                                   {/* Chat Interface */}
-
                                   {isAuthenticated ? (
-
                                       isClaiming ? (
-
                                           <div className="h-[200px] flex items-center justify-center border border-neutral-800 rounded-xl bg-neutral-900/50">
-
                                               <div className="flex flex-col items-center gap-2">
-
                                                   <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-
                                                   <p className="text-neutral-400">Syncing conversation...</p>
-
                                               </div>
-
                                           </div>
-
                                       ) : (
-
                                           <ChatContainer 
-
                                               conversationId={activeConversationId!} 
-
                                               initialMessages={initialMessages} 
-
                                           />
-
                                       )
-
                                   ) : (
-
                                       <LockedChatOverlay onClaim={() => setAuthModalOpen(true)} />
-
                                   )}
-
                               </div>
-
                           ) : (
-
                               <div className="text-center text-neutral-500 mt-20">
-
                                   Failed to load conversation.
-
                               </div>
-
                           )}
-
                       </motion.div>
-
                   )}
-
                   </AnimatePresence>
 
               </motion.div>
