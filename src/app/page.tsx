@@ -295,7 +295,7 @@ export default function Home() {
 
               <motion.div
                   layout
-                  className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-10 h-full flex flex-col"
+                  className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-24 md:pt-28 h-full flex flex-col"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                   <AnimatePresence mode="wait">
