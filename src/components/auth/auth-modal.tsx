@@ -21,6 +21,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
   
   const { loginAsync, registerAsync, isLoggingIn, isRegistering } = useAuth();
   const isLoading = isLoggingIn || isRegistering;
@@ -31,6 +32,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
         setEmail("");
         setPassword("");
         setConfirmPassword("");
+        setErrors({});
     }
   }, [isOpen]);
 
@@ -39,10 +41,20 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
       // Optional: Clear passwords on toggle
       setPassword("");
       setConfirmPassword("");
+      setErrors({});
+  };
+
+  const handleInputChange = (setter: (val: string) => void, field: keyof typeof errors) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+      if (errors[field] || errors.general) {
+          setErrors(prev => ({ ...prev, [field]: undefined, general: undefined }));
+      }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+    
     if (!email || !password) {
       toast.error("Please fill in all fields");
       return;
@@ -50,11 +62,11 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
 
     if (view === "register") {
         if (password !== confirmPassword) {
-            toast.error("Passwords do not match");
+            setErrors({ password: "Passwords do not match" });
             return;
         }
         if (password.length < 8) {
-            toast.error("Password must be at least 8 characters");
+            setErrors({ password: "Password must be at least 8 characters" });
             return;
         }
     }
@@ -73,8 +85,26 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
       if (onSuccess) onSuccess();
       onClose();
     } catch (error: any) {
-        // Error handling is partly done in fetchAPI but let's be safe
-      toast.error(error.message || "Authentication failed");
+      const msg = error.message || "Authentication failed";
+      const newErrors: typeof errors = {};
+
+      if (msg.includes("REGISTER_USER_ALREADY_EXISTS")) {
+          newErrors.email = "This email is already registered.";
+      } else if (msg.includes("LOGIN_BAD_CREDENTIALS")) {
+          newErrors.general = "Invalid email or password.";
+      } else if (msg.includes("value is not a valid email address")) {
+          newErrors.email = "Please enter a valid email address.";
+      } else if (msg.toLowerCase().includes("password")) {
+          newErrors.password = msg;
+      } else {
+          newErrors.general = msg;
+      }
+      
+      setErrors(newErrors);
+      // Fallback toast for general errors if no specific field error is set (or just always show generic toast if critical)
+      if (newErrors.general) {
+          toast.error(newErrors.general);
+      }
     }
   };
 
@@ -123,11 +153,16 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                     type="email"
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
+                    onChange={handleInputChange(setEmail, 'email')}
+                    className={cn("pl-10 transition-colors", errors.email ? "focus-visible:ring-red-500/50 text-red-100" : "")}
                     disabled={isLoading}
                   />
                 </div>
+                {errors.email && (
+                    <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-xs text-red-400 ml-1">
+                        {errors.email}
+                    </motion.p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -138,11 +173,16 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                     type="password"
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10"
+                    onChange={handleInputChange(setPassword, 'password')}
+                    className={cn("pl-10 transition-colors", errors.password ? "focus-visible:ring-red-500/50 text-red-100" : "")}
                     disabled={isLoading}
                   />
                 </div>
+                {errors.password && (
+                    <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-xs text-red-400 ml-1">
+                        {errors.password}
+                    </motion.p>
+                )}
               </div>
 
               {/* Confirm Password Field (Register Only) */}
@@ -161,7 +201,10 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                                 type="password"
                                 placeholder="••••••••"
                                 value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                onChange={(e) => {
+                                    setConfirmPassword(e.target.value);
+                                    if (errors.password) setErrors(prev => ({ ...prev, password: undefined }));
+                                }}
                                 className={cn(
                                     "pl-10 transition-colors", 
                                     !passwordsMatch ? "focus-visible:ring-red-500/50 text-red-100" : ""

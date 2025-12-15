@@ -94,7 +94,16 @@ export async function loginUser(credentials: Body_auth_jwt_login_auth_jwt_login_
     });
 
     if (!response.ok) {
-        throw new Error("Login failed");
+        let errorMessage = "Login failed";
+        try {
+            const errorData = await response.json();
+            if (errorData.detail) {
+                 errorMessage = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
+            }
+        } catch {
+            // Use default
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
