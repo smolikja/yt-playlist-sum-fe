@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2, Mail, Lock } from "lucide-react";
 import { InputWithGlow } from "@/components/ui/input-with-glow";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -19,15 +20,43 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
   const [view, setView] = useState<"login" | "register">(initialView);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   
   const { loginAsync, registerAsync, isLoggingIn, isRegistering } = useAuth();
   const isLoading = isLoggingIn || isRegistering;
+
+  // Reset state when view changes or modal closes
+  useEffect(() => {
+    if (!isOpen) {
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+    }
+  }, [isOpen]);
+
+  const toggleView = () => {
+      setView(view === "login" ? "register" : "login");
+      // Optional: Clear passwords on toggle
+      setPassword("");
+      setConfirmPassword("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error("Please fill in all fields");
       return;
+    }
+
+    if (view === "register") {
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
+        if (password.length < 8) {
+            toast.error("Password must be at least 8 characters");
+            return;
+        }
     }
 
     try {
@@ -48,6 +77,8 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
       toast.error(error.message || "Authentication failed");
     }
   };
+
+  const passwordsMatch = !confirmPassword || password === confirmPassword;
 
   return (
     <AnimatePresence>
@@ -114,6 +145,43 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                 </div>
               </div>
 
+              {/* Confirm Password Field (Register Only) */}
+              <AnimatePresence initial={false}>
+                {view === "register" && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="space-y-2 overflow-hidden"
+                    >
+                        <label className="text-sm font-medium text-zinc-400 ml-1">Confirm Password</label>
+                        <div className="relative">
+                            <Lock className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
+                            <InputWithGlow
+                                type="password"
+                                placeholder="••••••••"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className={cn(
+                                    "pl-10 transition-colors", 
+                                    !passwordsMatch ? "focus-visible:ring-red-500/50 text-red-100" : ""
+                                )}
+                                disabled={isLoading}
+                            />
+                        </div>
+                        {!passwordsMatch && (
+                            <motion.p 
+                                initial={{ opacity: 0, y: -5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-xs text-red-400 ml-1"
+                            >
+                                Passwords do not match
+                            </motion.p>
+                        )}
+                    </motion.div>
+                )}
+              </AnimatePresence>
+
               <div className="pt-4">
                 <Button 
                     type="submit" 
@@ -131,7 +199,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
               <div className="text-center mt-4">
                 <button
                   type="button"
-                  onClick={() => setView(view === "login" ? "register" : "login")}
+                  onClick={toggleView}
                   className="text-sm text-zinc-500 hover:text-indigo-400 transition-colors"
                   disabled={isLoading}
                 >
