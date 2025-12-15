@@ -288,7 +288,12 @@ export default function Home() {
 
               >
 
-                  <AnimatePresence>
+              <motion.div
+                  layout
+                  className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-10 h-full flex flex-col"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              >
+                  <AnimatePresence mode="wait">
                   {( (!isAuthenticated || !isDetailView) ) && (
                       <motion.div 
                           key="hero-section"
@@ -297,7 +302,7 @@ export default function Home() {
                           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                           exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                           transition={{ duration: 0.35, ease: "easeInOut" }}
-                          className={`flex flex-col items-center w-full transition-all duration-500 ${!isDetailView ? "flex-1 justify-center" : "mb-12 mt-8"}`}
+                          className={`flex flex-col items-center w-full ${!isDetailView ? "flex-1 justify-center" : "mb-12 mt-8"}`}
                       >
 
                           <motion.div layout className="text-center mb-12">
@@ -347,9 +352,7 @@ export default function Home() {
                           </motion.div>
                       </motion.div>
                   )}
-                  </AnimatePresence>
 
-                  <AnimatePresence>
                   {isDetailView && (
                       <motion.div 
                           key="detail-view"
@@ -416,6 +419,8 @@ export default function Home() {
                       </motion.div>
                   )}
                   </AnimatePresence>
+
+              </motion.div>
 
               </motion.div>
 
