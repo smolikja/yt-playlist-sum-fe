@@ -40,20 +40,10 @@ export function ChatInput({ onSend, isLoading, isEmpty, onInteract }: ChatInputP
         <div className="sticky bottom-0 z-30 w-full pt-2 pb-6 bg-gradient-to-t from-black via-black/80 to-transparent px-4">
             <div className="max-w-2xl mx-auto flex items-center justify-center">
 
-                <div className={cn(
-                    "relative flex items-center w-full rounded-2xl",
-                    isEmpty && "p-[2px] overflow-hidden" // Add padding for the border effect
-                )}>
-                    {isEmpty && (
-                        <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-                    )}
+                <div className="relative flex items-center w-full rounded-2xl p-[2px] overflow-hidden">
+                    <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
 
-                    <div className={cn(
-                        "relative flex items-center w-full h-full rounded-2xl",
-                        // When empty (glow active), use solid dark background to contrast with glow
-                        // When not empty, maintain original semi-transparent look
-                        isEmpty ? "bg-zinc-950" : ""
-                    )}>
+                    <div className="relative flex items-center w-full h-full rounded-2xl bg-zinc-950">
                         {/* Integrated Toggle Button (Left) */}
                         <div className="absolute left-2 top-1.5 z-10">
                             <TooltipProvider>
@@ -95,7 +85,7 @@ export function ChatInput({ onSend, isLoading, isEmpty, onInteract }: ChatInputP
                                 "flex h-12 w-full rounded-2xl py-2 text-sm shadow-2xl transition-all",
                                 "pl-12 pr-14", // Padding for left toggle and right send button
                                 "placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50",
-                                isEmpty ? "border-transparent bg-transparent" : "border-zinc-200 dark:border-zinc-800 bg-zinc-950/80 backdrop-blur-md"
+                                "border-transparent bg-transparent"
                             )}
                         />
 
