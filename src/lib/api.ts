@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { PlaylistRequest, SummaryResult, ChatRequest, ChatResponse, UserCreate, Body_auth_jwt_login_auth_jwt_login_post, BearerResponse, UserRead } from "./types";
+import { PlaylistRequest, SummaryResult, ChatRequest, ChatResponse, UserCreate, Body_auth_jwt_login_auth_jwt_login_post, BearerResponse, UserRead, ConversationResponse, ConversationDetailResponse } from "./types";
 
 const ANONYMOUS_ID_KEY = "x-user-id";
 const ACCESS_TOKEN_KEY = "access_token";
@@ -40,7 +40,6 @@ export function removeAccessToken() {
  * Generic fetch wrapper with error handling and default headers.
  */
 async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const anonymousId = getOrCreateAnonymousId();
     const token = getAccessToken();
 
     const headers: Record<string, string> = {
@@ -50,8 +49,6 @@ async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise
 
     if (token) {
         headers["Authorization"] = `Bearer ${token}`;
-    } else {
-        headers["x-user-id"] = anonymousId;
     }
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -66,8 +63,7 @@ async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise
             const errorData = await response.json();
             if (errorData.detail) {
                 if (Array.isArray(errorData.detail)) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    errorMessage = errorData.detail.map((e: any) => e.msg).join(", ");
+                    errorMessage = errorData.detail.map((e: { msg: string }) => e.msg).join(", ");
                 } else {
                     errorMessage = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
                 }
