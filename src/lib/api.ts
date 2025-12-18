@@ -1,5 +1,19 @@
 import { v4 as uuidv4 } from "uuid";
-import { PlaylistRequest, SummaryResult, ChatRequest, ChatResponse, UserCreate, Body_auth_jwt_login_auth_jwt_login_post, BearerResponse, UserRead, ConversationResponse, ConversationDetailResponse } from "./types";
+import {
+    PlaylistRequest,
+    SummaryResult,
+    ChatRequest,
+    ChatResponse,
+    UserCreate,
+    Body_auth_jwt_login_auth_jwt_login_post,
+    BearerResponse,
+    UserRead,
+    ConversationResponse,
+    ConversationDetailResponse,
+    ApiError,
+    ProblemDetails,
+    isProblemDetails,
+} from "./types";
 
 const ANONYMOUS_ID_KEY = "x-user-id";
 const ACCESS_TOKEN_KEY = "access_token";
@@ -37,14 +51,64 @@ export function removeAccessToken() {
 }
 
 /**
- * Generic fetch wrapper with error handling and default headers.
+ * Parses error response and extracts user-friendly message.
+ * Supports RFC 7807 Problem Details and legacy formats.
  */
-async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function parseErrorResponse(
+    response: Response
+): Promise<{ message: string; problemDetails?: ProblemDetails }> {
+    let message = `HTTP error! status: ${response.status}`;
+    let problemDetails: ProblemDetails | undefined;
+
+    // Handle rate limiting specifically
+    if (response.status === 429) {
+        return {
+            message: "Too many requests. Please wait a moment and try again.",
+        };
+    }
+
+    try {
+        const data = await response.json();
+
+        // RFC 7807 Problem Details format
+        if (isProblemDetails(data)) {
+            problemDetails = data;
+            message = data.detail || data.title;
+        }
+        // Legacy format with detail field
+        else if (data.detail) {
+            if (Array.isArray(data.detail)) {
+                // Validation errors
+                message = data.detail
+                    .map((e: { msg: string }) => e.msg)
+                    .join(", ");
+            } else {
+                message =
+                    typeof data.detail === "string"
+                        ? data.detail
+                        : JSON.stringify(data.detail);
+            }
+        }
+    } catch {
+        // If JSON parsing fails, use default message
+    }
+
+    return { message, problemDetails };
+}
+
+/**
+ * Generic fetch wrapper with error handling and default headers.
+ * Supports RFC 7807 error responses and rate limiting.
+ */
+async function fetchAPI<T>(
+    endpoint: string,
+    options: RequestInit = {}
+): Promise<T> {
     const token = getAccessToken();
 
     const headers: Record<string, string> = {
         "Content-Type": "application/json",
-        ...options.headers as Record<string, string>,
+        ...(options.headers as Record<string, string>),
     };
 
     if (token) {
@@ -57,21 +121,8 @@ async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise
     });
 
     if (!response.ok) {
-        // Try to parse error message from JSON
-        let errorMessage = `HTTP error! status: ${response.status}`;
-        try {
-            const errorData = await response.json();
-            if (errorData.detail) {
-                if (Array.isArray(errorData.detail)) {
-                    errorMessage = errorData.detail.map((e: { msg: string }) => e.msg).join(", ");
-                } else {
-                    errorMessage = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
-                }
-            }
-        } catch {
-            // If parsing fails, use default message
-        }
-        throw new Error(errorMessage);
+        const { message, problemDetails } = await parseErrorResponse(response);
+        throw new ApiError(message, response.status, problemDetails);
     }
 
     return response.json();
@@ -84,7 +135,7 @@ export async function loginUser(credentials: Body_auth_jwt_login_auth_jwt_login_
     const formData = new URLSearchParams();
     formData.append("username", credentials.username);
     formData.append("password", credentials.password);
-    
+
     const response = await fetch(`${API_BASE_URL}/auth/jwt/login`, {
         method: "POST",
         headers: {
@@ -94,16 +145,8 @@ export async function loginUser(credentials: Body_auth_jwt_login_auth_jwt_login_
     });
 
     if (!response.ok) {
-        let errorMessage = "Login failed";
-        try {
-            const errorData = await response.json();
-            if (errorData.detail) {
-                 errorMessage = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
-            }
-        } catch {
-            // Use default
-        }
-        throw new Error(errorMessage);
+        const { message, problemDetails } = await parseErrorResponse(response);
+        throw new ApiError(message, response.status, problemDetails);
     }
 
     return response.json();

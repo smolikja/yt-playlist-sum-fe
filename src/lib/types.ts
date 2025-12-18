@@ -91,3 +91,39 @@ export interface BearerResponse {
   access_token: string;
   token_type: string;
 }
+
+// RFC 7807 Problem Details
+export interface ProblemDetails {
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
+  instance?: string;
+}
+
+// Custom API Error class with RFC 7807 support
+export class ApiError extends Error {
+  status: number;
+  isRateLimited: boolean;
+  retryAfter?: number;
+  problemDetails?: ProblemDetails;
+
+  constructor(message: string, status: number, problemDetails?: ProblemDetails) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.isRateLimited = status === 429;
+    this.problemDetails = problemDetails;
+  }
+}
+
+// Type guard for ProblemDetails
+export function isProblemDetails(data: unknown): data is ProblemDetails {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "type" in data &&
+    "title" in data &&
+    "status" in data
+  );
+}
