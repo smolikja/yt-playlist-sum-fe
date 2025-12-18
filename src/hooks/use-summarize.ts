@@ -1,6 +1,7 @@
 import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query";
 import { summarizePlaylist } from "@/lib/api";
 import { SummaryResult } from "@/lib/types";
+import { queryKeys } from "@/lib/queryKeys";
 
 /**
  * Custom hook to handle playlist summarization.
@@ -14,7 +15,8 @@ export function useSummarize(): UseMutationResult<SummaryResult, Error, string> 
         mutationFn: (url: string) => summarizePlaylist(url),
         onSuccess: () => {
             // Invalidate the conversations list query so the sidebar updates immediately
-            queryClient.invalidateQueries({ queryKey: ["conversations"] });
+            queryClient.invalidateQueries({ queryKey: queryKeys.conversations.all });
         },
     });
 }
+

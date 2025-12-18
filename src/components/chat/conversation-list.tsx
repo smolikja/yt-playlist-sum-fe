@@ -67,17 +67,26 @@ export function ConversationList({ selectedId, onSelect, onDelete }: Conversatio
   );
 }
 
+const GROUP_LABELS = {
+  TODAY: "Today",
+  YESTERDAY: "Yesterday",
+  PREVIOUS_7_DAYS: "Previous 7 Days",
+  OLDER: "Older",
+} as const;
+
+type GroupLabel = (typeof GROUP_LABELS)[keyof typeof GROUP_LABELS];
+
 function groupConversations(conversations: ConversationResponse[]) {
   // Sort by updated_at descending
-  const sorted = [...conversations].sort((a, b) => 
+  const sorted = [...conversations].sort((a, b) =>
     new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime()
   );
 
-  const groups: Record<string, ConversationResponse[]> = {
-    "Today": [],
-    "Yesterday": [],
-    "Previous 7 Days": [],
-    "Older": []
+  const groups: Record<GroupLabel, ConversationResponse[]> = {
+    [GROUP_LABELS.TODAY]: [],
+    [GROUP_LABELS.YESTERDAY]: [],
+    [GROUP_LABELS.PREVIOUS_7_DAYS]: [],
+    [GROUP_LABELS.OLDER]: [],
   };
 
   const now = new Date();
@@ -93,13 +102,13 @@ function groupConversations(conversations: ConversationResponse[]) {
     const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
     if (compareDate.getTime() === today.getTime()) {
-      groups["Today"].push(conv);
+      groups[GROUP_LABELS.TODAY].push(conv);
     } else if (compareDate.getTime() === yesterday.getTime()) {
-      groups["Yesterday"].push(conv);
+      groups[GROUP_LABELS.YESTERDAY].push(conv);
     } else if (compareDate > lastWeek) {
-      groups["Previous 7 Days"].push(conv);
+      groups[GROUP_LABELS.PREVIOUS_7_DAYS].push(conv);
     } else {
-      groups["Older"].push(conv);
+      groups[GROUP_LABELS.OLDER].push(conv);
     }
   });
 

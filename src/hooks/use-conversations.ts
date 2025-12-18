@@ -3,12 +3,13 @@ import { getConversations, deleteConversation } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { ConversationResponse } from "@/lib/types";
+import { queryKeys } from "@/lib/queryKeys";
 
 export function useConversations() {
   const { isAuthenticated } = useAuth();
 
   return useQuery({
-    queryKey: ["conversations"],
+    queryKey: queryKeys.conversations.all,
     queryFn: () => getConversations(),
     enabled: isAuthenticated,
   });
@@ -21,14 +22,14 @@ export function useDeleteConversation() {
     mutationFn: (id: string) => deleteConversation(id),
     onMutate: async (deletedId) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: ["conversations"] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.conversations.all });
 
       // Snapshot the previous value
-      const previousConversations = queryClient.getQueryData<ConversationResponse[]>(["conversations"]);
+      const previousConversations = queryClient.getQueryData<ConversationResponse[]>(queryKeys.conversations.all);
 
       // Optimistically update to the new value
       if (previousConversations) {
-        queryClient.setQueryData<ConversationResponse[]>(["conversations"], (old) =>
+        queryClient.setQueryData<ConversationResponse[]>(queryKeys.conversations.all, (old) =>
           old ? old.filter((conv) => conv.id !== deletedId) : []
         );
       }
@@ -39,7 +40,7 @@ export function useDeleteConversation() {
     onError: (err, newTodo, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousConversations) {
-        queryClient.setQueryData(["conversations"], context.previousConversations);
+        queryClient.setQueryData(queryKeys.conversations.all, context.previousConversations);
       }
       toast.error("Failed to delete conversation");
     },
@@ -48,7 +49,8 @@ export function useDeleteConversation() {
     },
     onSettled: () => {
       // Always refetch after error or success:
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.conversations.all });
     },
   });
 }
+

@@ -22,53 +22,53 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
-  
+
   const { loginAsync, registerAsync, isLoggingIn, isRegistering } = useAuth();
   const isLoading = isLoggingIn || isRegistering;
 
   // Reset state when view changes or modal closes
   useEffect(() => {
     if (!isOpen) {
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        setErrors({});
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setErrors({});
     }
   }, [isOpen]);
 
   const toggleView = () => {
-      setView(view === "login" ? "register" : "login");
-      // Optional: Clear passwords on toggle
-      setPassword("");
-      setConfirmPassword("");
-      setErrors({});
+    setView(view === "login" ? "register" : "login");
+    // Optional: Clear passwords on toggle
+    setPassword("");
+    setConfirmPassword("");
+    setErrors({});
   };
 
   const handleInputChange = (setter: (val: string) => void, field: keyof typeof errors) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setter(e.target.value);
-      if (errors[field] || errors.general) {
-          setErrors(prev => ({ ...prev, [field]: undefined, general: undefined }));
-      }
+    setter(e.target.value);
+    if (errors[field] || errors.general) {
+      setErrors(prev => ({ ...prev, [field]: undefined, general: undefined }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    
+
     if (!email || !password) {
       toast.error("Please fill in all fields");
       return;
     }
 
     if (view === "register") {
-        if (password !== confirmPassword) {
-            setErrors({ password: "Passwords do not match" });
-            return;
-        }
-        if (password.length < 8) {
-            setErrors({ password: "Password must be at least 8 characters" });
-            return;
-        }
+      if (password !== confirmPassword) {
+        setErrors({ password: "Passwords do not match" });
+        return;
+      }
+      if (password.length < 8) {
+        setErrors({ password: "Password must be at least 8 characters" });
+        return;
+      }
     }
 
     try {
@@ -80,30 +80,30 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
       } else {
         await loginAsync({ username: email, password });
       }
-      
+
       toast.success(view === "register" ? "Welcome!" : "Welcome back!");
       if (onSuccess) onSuccess();
       onClose();
-    } catch (error: any) {
-      const msg = error.message || "Authentication failed";
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Authentication failed";
       const newErrors: typeof errors = {};
 
       if (msg.includes("REGISTER_USER_ALREADY_EXISTS")) {
-          newErrors.email = "This email is already registered.";
+        newErrors.email = "This email is already registered.";
       } else if (msg.includes("LOGIN_BAD_CREDENTIALS")) {
-          newErrors.general = "Invalid email or password.";
+        newErrors.general = "Invalid email or password.";
       } else if (msg.includes("value is not a valid email address")) {
-          newErrors.email = "Please enter a valid email address.";
+        newErrors.email = "Please enter a valid email address.";
       } else if (msg.toLowerCase().includes("password")) {
-          newErrors.password = msg;
+        newErrors.password = msg;
       } else {
-          newErrors.general = msg;
+        newErrors.general = msg;
       }
-      
+
       setErrors(newErrors);
       // Fallback toast for general errors if no specific field error is set (or just always show generic toast if critical)
       if (newErrors.general) {
-          toast.error(newErrors.general);
+        toast.error(newErrors.general);
       }
     }
   };
@@ -159,9 +159,9 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                   />
                 </div>
                 {errors.email && (
-                    <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-xs text-red-400 ml-1">
-                        {errors.email}
-                    </motion.p>
+                  <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-xs text-red-400 ml-1">
+                    {errors.email}
+                  </motion.p>
                 )}
               </div>
 
@@ -179,57 +179,57 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                   />
                 </div>
                 {errors.password && (
-                    <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-xs text-red-400 ml-1">
-                        {errors.password}
-                    </motion.p>
+                  <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-xs text-red-400 ml-1">
+                    {errors.password}
+                  </motion.p>
                 )}
               </div>
 
               {/* Confirm Password Field (Register Only) */}
               <AnimatePresence initial={false}>
                 {view === "register" && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="space-y-2 overflow-hidden"
-                    >
-                        <label className="text-sm font-medium text-zinc-400 ml-1">Confirm Password</label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
-                            <InputWithGlow
-                                type="password"
-                                placeholder="••••••••"
-                                value={confirmPassword}
-                                onChange={(e) => {
-                                    setConfirmPassword(e.target.value);
-                                    if (errors.password) setErrors(prev => ({ ...prev, password: undefined }));
-                                }}
-                                className={cn(
-                                    "pl-10 transition-colors", 
-                                    !passwordsMatch ? "focus-visible:ring-red-500/50 text-red-100" : ""
-                                )}
-                                disabled={isLoading}
-                            />
-                        </div>
-                        {!passwordsMatch && (
-                            <motion.p 
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-xs text-red-400 ml-1"
-                            >
-                                Passwords do not match
-                            </motion.p>
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="space-y-2 overflow-hidden"
+                  >
+                    <label className="text-sm font-medium text-zinc-400 ml-1">Confirm Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
+                      <InputWithGlow
+                        type="password"
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => {
+                          setConfirmPassword(e.target.value);
+                          if (errors.password) setErrors(prev => ({ ...prev, password: undefined }));
+                        }}
+                        className={cn(
+                          "pl-10 transition-colors",
+                          !passwordsMatch ? "focus-visible:ring-red-500/50 text-red-100" : ""
                         )}
-                    </motion.div>
+                        disabled={isLoading}
+                      />
+                    </div>
+                    {!passwordsMatch && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-xs text-red-400 ml-1"
+                      >
+                        Passwords do not match
+                      </motion.p>
+                    )}
+                  </motion.div>
                 )}
               </AnimatePresence>
 
               <div className="pt-4">
-                <Button 
-                    type="submit" 
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-12 text-lg font-medium shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all hover:shadow-[0_0_30px_rgba(79,70,229,0.5)]"
-                    disabled={isLoading}
+                <Button
+                  type="submit"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-12 text-lg font-medium shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all hover:shadow-[0_0_30px_rgba(79,70,229,0.5)]"
+                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

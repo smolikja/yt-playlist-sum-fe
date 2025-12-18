@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { sendMessage } from "@/lib/api";
 import { Role } from "@/lib/types";
+import { queryKeys } from "@/lib/queryKeys";
 
 export interface Message {
     role: Role;
@@ -35,7 +36,7 @@ export function useChat({ conversationId, initialMessages = [] }: UseChatProps) 
                 { role: Role.AI, content: data.response },
             ]);
             // Invalidate conversations list so it re-sorts by updated_at
-            queryClient.invalidateQueries({ queryKey: ["conversations"] });
+            queryClient.invalidateQueries({ queryKey: queryKeys.conversations.all });
         },
         onError: (error) => {
             console.error("Failed to send message:", error);
