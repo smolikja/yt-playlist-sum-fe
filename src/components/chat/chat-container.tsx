@@ -21,10 +21,9 @@ export function ChatContainer({ conversationId, initialMessages, onInteract }: C
         >
             <div className="flex flex-col gap-6">
                 <MessageList messages={messages} isLoading={isLoading} conversationId={conversationId} />
-                <ChatInput 
-                    onSend={submitMessage} 
-                    isLoading={isLoading} 
-                    isEmpty={messages.length === 0}
+                <ChatInput
+                    onSend={submitMessage}
+                    isLoading={isLoading}
                     onInteract={onInteract}
                 />
             </div>

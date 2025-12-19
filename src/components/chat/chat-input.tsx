@@ -1,19 +1,22 @@
+"use client";
+
 import { useState, KeyboardEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SendHorizonal, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface ChatInputProps {
     onSend: (message: string, useTranscripts: boolean) => void;
     isLoading: boolean;
-    isEmpty: boolean;
     onInteract?: () => void;
 }
 
-export function ChatInput({ onSend, isLoading, isEmpty, onInteract }: ChatInputProps) {
+export function ChatInput({ onSend, isLoading, onInteract }: ChatInputProps) {
     const [input, setInput] = useState("");
     const [isFastMode, setIsFastMode] = useState(true);
+    const t = useTranslations("chat");
 
     const handleSend = () => {
         if (!input.trim() || isLoading) return;
@@ -28,7 +31,7 @@ export function ChatInput({ onSend, isLoading, isEmpty, onInteract }: ChatInputP
             handleSend();
         }
     };
-    
+
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
         if (onInteract) {
             e.target.blur();
@@ -64,9 +67,9 @@ export function ChatInput({ onSend, isLoading, isEmpty, onInteract }: ChatInputP
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent side="top" className="bg-zinc-900 border-zinc-800 text-zinc-100">
-                                        <p className="font-semibold">{isFastMode ? "Fast Mode On" : "Deep Mode On"}</p>
+                                        <p className="font-semibold">{isFastMode ? t("fastModeOn") : t("deepModeOn")}</p>
                                         <p className="text-xs text-zinc-400">
-                                            {isFastMode ? "Quick answers from summary" : "Detailed answers from transcripts"}
+                                            {isFastMode ? t("fastModeDesc") : t("deepModeDesc")}
                                         </p>
                                     </TooltipContent>
                                 </Tooltip>
@@ -79,7 +82,7 @@ export function ChatInput({ onSend, isLoading, isEmpty, onInteract }: ChatInputP
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
                             onFocus={handleFocus}
-                            placeholder={isFastMode ? "Ask a quick question..." : "Ask a detailed question..."}
+                            placeholder={t("placeholder")}
                             disabled={isLoading}
                             className={cn(
                                 "flex h-12 w-full rounded-2xl py-2 text-sm shadow-2xl transition-all",

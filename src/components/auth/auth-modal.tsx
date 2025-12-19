@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
 
   const { loginAsync, registerAsync, isLoggingIn, isRegistering } = useAuth();
   const isLoading = isLoggingIn || isRegistering;
+  const t = useTranslations("auth");
 
   // Reset state when view changes or modal closes
   useEffect(() => {
@@ -56,17 +58,17 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
     setErrors({});
 
     if (!email || !password) {
-      toast.error("Please fill in all fields");
+      toast.error(t("errors.fillAllFields"));
       return;
     }
 
     if (view === "register") {
       if (password !== confirmPassword) {
-        setErrors({ password: "Passwords do not match" });
+        setErrors({ password: t("errors.passwordsNoMatch") });
         return;
       }
       if (password.length < 8) {
-        setErrors({ password: "Password must be at least 8 characters" });
+        setErrors({ password: t("errors.passwordTooShort") });
         return;
       }
     }
@@ -74,26 +76,26 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
     try {
       if (view === "register") {
         await registerAsync({ email, password });
-        toast.success("Account created! Logging you in...");
+        toast.success(t("success.accountCreated"));
         // Auto login after register
         await loginAsync({ username: email, password });
       } else {
         await loginAsync({ username: email, password });
       }
 
-      toast.success(view === "register" ? "Welcome!" : "Welcome back!");
+      toast.success(view === "register" ? t("success.welcome") : t("success.welcomeBack"));
       if (onSuccess) onSuccess();
       onClose();
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Authentication failed";
+      const msg = error instanceof Error ? error.message : t("errors.authFailed");
       const newErrors: typeof errors = {};
 
       if (msg.includes("REGISTER_USER_ALREADY_EXISTS")) {
-        newErrors.email = "This email is already registered.";
+        newErrors.email = t("errors.emailExists");
       } else if (msg.includes("LOGIN_BAD_CREDENTIALS")) {
-        newErrors.general = "Invalid email or password.";
+        newErrors.general = t("errors.invalidCredentials");
       } else if (msg.includes("value is not a valid email address")) {
-        newErrors.email = "Please enter a valid email address.";
+        newErrors.email = t("errors.invalidEmail");
       } else if (msg.toLowerCase().includes("password")) {
         newErrors.password = msg;
       } else {
@@ -133,7 +135,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-zinc-800">
               <h2 className="text-xl font-bold text-white">
-                {view === "login" ? "Welcome Back" : "Create Account"}
+                {view === "login" ? t("welcomeBack") : t("createAccount")}
               </h2>
               <button
                 onClick={onClose}
@@ -146,12 +148,12 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400 ml-1">Email</label>
+                <label className="text-sm font-medium text-zinc-400 ml-1">{t("email")}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
                   <InputWithGlow
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder={t("emailPlaceholder")}
                     value={email}
                     onChange={handleInputChange(setEmail, 'email')}
                     className={cn("pl-10 transition-colors", errors.email ? "focus-visible:ring-red-500/50 text-red-100" : "")}
@@ -166,12 +168,12 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400 ml-1">Password</label>
+                <label className="text-sm font-medium text-zinc-400 ml-1">{t("password")}</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
                   <InputWithGlow
                     type="password"
-                    placeholder="••••••••"
+                    placeholder={t("passwordPlaceholder")}
                     value={password}
                     onChange={handleInputChange(setPassword, 'password')}
                     className={cn("pl-10 transition-colors", errors.password ? "focus-visible:ring-red-500/50 text-red-100" : "")}
@@ -194,12 +196,12 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2 overflow-hidden"
                   >
-                    <label className="text-sm font-medium text-zinc-400 ml-1">Confirm Password</label>
+                    <label className="text-sm font-medium text-zinc-400 ml-1">{t("confirmPassword")}</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
                       <InputWithGlow
                         type="password"
-                        placeholder="••••••••"
+                        placeholder={t("passwordPlaceholder")}
                         value={confirmPassword}
                         onChange={(e) => {
                           setConfirmPassword(e.target.value);
@@ -218,7 +220,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                         animate={{ opacity: 1, y: 0 }}
                         className="text-xs text-red-400 ml-1"
                       >
-                        Passwords do not match
+                        {t("errors.passwordsNoMatch")}
                       </motion.p>
                     )}
                   </motion.div>
@@ -234,7 +236,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    view === "login" ? "Sign In" : "Sign Up"
+                    view === "login" ? t("signIn") : t("signUp")
                   )}
                 </Button>
               </div>
@@ -247,8 +249,8 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                   disabled={isLoading}
                 >
                   {view === "login"
-                    ? "Don't have an account? Sign up"
-                    : "Already have an account? Sign in"}
+                    ? t("noAccount")
+                    : t("hasAccount")}
                 </button>
               </div>
             </form>

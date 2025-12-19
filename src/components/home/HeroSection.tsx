@@ -5,6 +5,7 @@ import { Sparkles } from "lucide-react";
 import { InputWithGlow } from "@/components/ui/input-with-glow";
 import { MagicButton } from "@/components/ui/magic-button";
 import { LoadingProgress } from "./LoadingProgress";
+import { useTranslations } from "next-intl";
 
 interface HeroSectionProps {
     url: string;
@@ -25,6 +26,8 @@ export function HeroSection({
     loadingStep,
     loadingSteps,
 }: HeroSectionProps) {
+    const t = useTranslations("hero");
+
     return (
         <motion.div
             key="hero-section"
@@ -37,17 +40,16 @@ export function HeroSection({
         >
             <motion.div layout className="text-center mb-12">
                 <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-4">
-                    YouTube Playlist Summarizer
+                    {t("title")}
                 </h1>
                 <p className="mt-8 font-normal text-base text-neutral-300 max-w-lg mx-auto">
-                    Transform hours of video content into concise, actionable summaries
-                    using advanced AI. Just paste your YouTube playlist URL below.
+                    {t("description")}
                 </p>
             </motion.div>
 
             <motion.div layout className="relative z-10 max-w-xl mx-auto w-full">
                 <InputWithGlow
-                    placeholder="https://www.youtube.com/playlist?list=..."
+                    placeholder={t("placeholder")}
                     value={url}
                     onChange={(e) => onUrlChange(e.target.value)}
                     onKeyDown={onKeyDown}
@@ -59,7 +61,7 @@ export function HeroSection({
                         <LoadingProgress currentStep={loadingStep} steps={loadingSteps} />
                     ) : (
                         <MagicButton
-                            title="Summarize Playlist"
+                            title={t("button")}
                             icon={<Sparkles className="w-4 h-4" />}
                             position="right"
                             handleClick={onSubmit}

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { SummaryCard } from "./SummaryCard";
 import { ChatContainer } from "@/components/chat/chat-container";
 import { Message } from "@/hooks/use-chat";
+import { useTranslations } from "next-intl";
 
 interface DetailViewProps {
     conversationId: string;
@@ -31,6 +32,8 @@ export function DetailView({
     isClaiming,
     onAuthRequired,
 }: DetailViewProps) {
+    const t = useTranslations("detail");
+
     return (
         <motion.div
             key="detail-view"
@@ -59,7 +62,7 @@ export function DetailView({
                             <div className="h-[200px] flex items-center justify-center border border-neutral-800 rounded-xl bg-neutral-900/50">
                                 <div className="flex flex-col items-center gap-2">
                                     <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-                                    <p className="text-neutral-400">Syncing conversation...</p>
+                                    <p className="text-neutral-400">{t("syncingConversation")}</p>
                                 </div>
                             </div>
                         ) : (
@@ -78,7 +81,7 @@ export function DetailView({
                 </div>
             ) : (
                 <div className="text-center text-neutral-500 mt-20">
-                    Failed to load conversation.
+                    {t("loadFailed")}
                 </div>
             )}
         </motion.div>

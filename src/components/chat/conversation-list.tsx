@@ -1,9 +1,12 @@
+"use client";
+
 import { useConversations } from "@/hooks/use-conversations";
 import { ConversationItem } from "./conversation-item";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ConversationResponse } from "@/lib/types";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface ConversationListProps {
   selectedId?: string;
@@ -13,6 +16,8 @@ interface ConversationListProps {
 
 export function ConversationList({ selectedId, onSelect, onDelete }: ConversationListProps) {
   const { data: conversations, isLoading, error } = useConversations();
+  const t = useTranslations("conversations");
+  const tTime = useTranslations("time");
 
   if (isLoading) {
     return (
@@ -25,14 +30,14 @@ export function ConversationList({ selectedId, onSelect, onDelete }: Conversatio
   }
 
   if (error) {
-    return <div className="p-4 text-red-500 text-sm text-center">Failed to load history.</div>;
+    return <div className="p-4 text-red-500 text-sm text-center">{t("loadFailed")}</div>;
   }
 
   if (!conversations || conversations.length === 0) {
-    return <div className="p-4 text-neutral-500 text-sm text-center">No history found.</div>;
+    return <div className="p-4 text-neutral-500 text-sm text-center">{t("noHistory")}</div>;
   }
 
-  const grouped = groupConversations(conversations);
+  const grouped = groupConversations(conversations, tTime);
 
   return (
     <ScrollArea className="h-full px-4">
@@ -67,26 +72,27 @@ export function ConversationList({ selectedId, onSelect, onDelete }: Conversatio
   );
 }
 
-const GROUP_LABELS = {
-  TODAY: "Today",
-  YESTERDAY: "Yesterday",
-  PREVIOUS_7_DAYS: "Previous 7 Days",
-  OLDER: "Older",
-} as const;
-
-type GroupLabel = (typeof GROUP_LABELS)[keyof typeof GROUP_LABELS];
-
-function groupConversations(conversations: ConversationResponse[]) {
+function groupConversations(
+  conversations: ConversationResponse[],
+  t: (key: string) => string
+) {
   // Sort by updated_at descending
   const sorted = [...conversations].sort((a, b) =>
     new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime()
   );
 
-  const groups: Record<GroupLabel, ConversationResponse[]> = {
-    [GROUP_LABELS.TODAY]: [],
-    [GROUP_LABELS.YESTERDAY]: [],
-    [GROUP_LABELS.PREVIOUS_7_DAYS]: [],
-    [GROUP_LABELS.OLDER]: [],
+  const labels = {
+    today: t("today"),
+    yesterday: t("yesterday"),
+    previous7Days: t("previous7Days"),
+    older: t("older"),
+  };
+
+  const groups: Record<string, ConversationResponse[]> = {
+    [labels.today]: [],
+    [labels.yesterday]: [],
+    [labels.previous7Days]: [],
+    [labels.older]: [],
   };
 
   const now = new Date();
@@ -102,13 +108,13 @@ function groupConversations(conversations: ConversationResponse[]) {
     const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
     if (compareDate.getTime() === today.getTime()) {
-      groups[GROUP_LABELS.TODAY].push(conv);
+      groups[labels.today].push(conv);
     } else if (compareDate.getTime() === yesterday.getTime()) {
-      groups[GROUP_LABELS.YESTERDAY].push(conv);
+      groups[labels.yesterday].push(conv);
     } else if (compareDate > lastWeek) {
-      groups[GROUP_LABELS.PREVIOUS_7_DAYS].push(conv);
+      groups[labels.previous7Days].push(conv);
     } else {
-      groups[GROUP_LABELS.OLDER].push(conv);
+      groups[labels.older].push(conv);
     }
   });
 

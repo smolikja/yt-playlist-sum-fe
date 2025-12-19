@@ -6,8 +6,16 @@ import { Sidebar, MobileSidebar } from "@/components/chat/sidebar";
 import { AuthModal } from "@/components/auth/auth-modal";
 import { Spotlight } from "@/components/ui/spotlight";
 import { motion, AnimatePresence } from "framer-motion";
+import { setRequestLocale } from "next-intl/server";
+import { use } from "react";
 
-export default function Home() {
+type Props = {
+    params: Promise<{ locale: string }>;
+};
+
+export default function Home({ params }: Props) {
+    const { locale } = use(params);
+
     const {
         // State
         url,

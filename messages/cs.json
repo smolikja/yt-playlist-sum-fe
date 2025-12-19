@@ -1,0 +1,103 @@
+{
+    "hero": {
+        "title": "Shrnutí YouTube Playlistů",
+        "description": "Přeměňte hodiny videí na stručná, praktická shrnutí pomocí umělé inteligence. Stačí vložit URL vašeho YouTube playlistu.",
+        "button": "Shrnout Playlist",
+        "placeholder": "https://www.youtube.com/playlist?list=..."
+    },
+    "header": {
+        "newSummary": "Nové shrnutí",
+        "signIn": "Přihlásit se",
+        "signOut": "Odhlásit se"
+    },
+    "sidebar": {
+        "newChat": "Nový chat",
+        "history": "Historie"
+    },
+    "auth": {
+        "welcomeBack": "Vítejte zpět",
+        "createAccount": "Vytvořit účet",
+        "email": "E-mail",
+        "emailPlaceholder": "vas@email.cz",
+        "password": "Heslo",
+        "passwordPlaceholder": "••••••••",
+        "confirmPassword": "Potvrzení hesla",
+        "signIn": "Přihlásit se",
+        "signUp": "Registrovat se",
+        "noAccount": "Nemáte účet? Zaregistrujte se",
+        "hasAccount": "Už máte účet? Přihlaste se",
+        "errors": {
+            "fillAllFields": "Vyplňte prosím všechna pole",
+            "passwordsNoMatch": "Hesla se neshodují",
+            "passwordTooShort": "Heslo musí mít alespoň 8 znaků",
+            "emailExists": "Tento e-mail je již registrován.",
+            "invalidCredentials": "Neplatný e-mail nebo heslo.",
+            "invalidEmail": "Zadejte prosím platnou e-mailovou adresu.",
+            "authFailed": "Přihlášení se nezdařilo"
+        },
+        "success": {
+            "accountCreated": "Účet vytvořen! Přihlašujeme vás...",
+            "welcomeBack": "Vítejte zpět!",
+            "welcome": "Vítejte!"
+        }
+    },
+    "chat": {
+        "fastModeOn": "Rychlý režim",
+        "deepModeOn": "Hloubkový režim",
+        "fastModeDesc": "Rychlé odpovědi ze shrnutí",
+        "deepModeDesc": "Podrobné odpovědi z přepisů",
+        "placeholder": "Zeptejte se na tento playlist..."
+    },
+    "conversations": {
+        "untitled": "Nepojmenovaná konverzace",
+        "delete": "Smazat",
+        "deleting": "Mazání...",
+        "cancel": "Zrušit",
+        "deleteTitle": "Smazat konverzaci?",
+        "deleteDescription": "Opravdu chcete smazat tuto konverzaci? Tuto akci nelze vrátit zpět.",
+        "noHistory": "Žádná historie nenalezena.",
+        "loadFailed": "Nepodařilo se načíst historii."
+    },
+    "detail": {
+        "syncingConversation": "Synchronizuji konverzaci...",
+        "loadFailed": "Nepodařilo se načíst konverzaci."
+    },
+    "loading": {
+        "fetchingPlaylist": "Načítám data playlistu...",
+        "extractingTranscripts": "Extrahuji přepisy videí...",
+        "analyzingContent": "Analyzuji obsah pomocí Gemini...",
+        "generatingSummary": "Generuji shrnutí..."
+    },
+    "toast": {
+        "success": {
+            "summaryGenerated": "Shrnutí úspěšně vygenerováno!",
+            "conversationDeleted": "Konverzace smazána",
+            "conversationClaimed": "Konverzace úspěšně přiřazena!"
+        },
+        "error": {
+            "enterPlaylistUrl": "Zadejte prosím URL playlistu",
+            "failedToGenerate": "Nepodařilo se vygenerovat shrnutí",
+            "failedToDelete": "Nepodařilo se smazat konverzaci",
+            "failedToClaim": "Nepodařilo se přiřadit konverzaci."
+        }
+    },
+    "time": {
+        "justNow": "Právě teď",
+        "minutesAgo": "před {count} min",
+        "hoursAgo": "před {count} h",
+        "yesterday": "Včera",
+        "daysAgo": "před {count} dny",
+        "today": "Dnes",
+        "previous7Days": "Posledních 7 dní",
+        "older": "Starší"
+    },
+    "metadata": {
+        "title": "Shrnutí YouTube Playlistů | AI Video Souhrny",
+        "description": "Přeměňte hodiny obsahu z YouTube playlistů na stručná, praktická shrnutí pomocí pokročilé umělé inteligence.",
+        "ogTitle": "Shrnutí YouTube Playlistů",
+        "ogDescription": "AI shrnutí pro YouTube playlisty"
+    },
+    "common": {
+        "playlistSummary": "Shrnutí playlistu"
+    }
+}

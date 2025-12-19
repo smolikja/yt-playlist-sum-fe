@@ -1,3 +1,5 @@
+"use client";
+
 import { cn, formatRelativeTime } from "@/lib/utils";
 import { ConversationResponse } from "@/lib/types";
 import { motion } from "framer-motion";
@@ -15,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteConversation } from "@/hooks/use-conversations";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface ConversationItemProps {
   conversation: ConversationResponse;
@@ -26,14 +29,15 @@ interface ConversationItemProps {
 export function ConversationItem({ conversation, isActive, onClick, onDelete }: ConversationItemProps) {
   const { mutate: deleteConversation, isPending } = useDeleteConversation();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const t = useTranslations("conversations");
 
   const confirmDelete = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent default action if any
     deleteConversation(conversation.id, {
-        onSuccess: () => {
-            onDelete?.(conversation.id);
-            setIsAlertOpen(false);
-        }
+      onSuccess: () => {
+        onDelete?.(conversation.id);
+        setIsAlertOpen(false);
+      }
     });
   };
 
@@ -61,7 +65,7 @@ export function ConversationItem({ conversation, isActive, onClick, onDelete }: 
       <div className="flex items-center gap-2 w-full">
         <MessageSquare className={cn("w-4 h-4", isActive ? "text-indigo-400" : "text-neutral-500")} />
         <span className={cn("text-sm font-medium truncate w-full", isActive ? "text-neutral-200" : "text-neutral-400 group-hover:text-neutral-300")}>
-          {conversation.title || "Untitled Conversation"}
+          {conversation.title || t("untitled")}
         </span>
       </div>
 
@@ -70,16 +74,16 @@ export function ConversationItem({ conversation, isActive, onClick, onDelete }: 
           {conversation.summary_snippet}
         </p>
       )}
-      
+
       <div className="flex items-center gap-1 pl-6 mt-1">
         <Clock className="w-3 h-3 text-neutral-600" />
         <span className="text-[10px] text-neutral-600">
-            {formatRelativeTime(conversation.updated_at || conversation.created_at)}
+          {formatRelativeTime(conversation.updated_at || conversation.created_at)}
         </span>
       </div>
 
       {/* Delete Action */}
-      <div 
+      <div
         className="absolute top-3 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20"
         onClick={(e) => e.stopPropagation()}
       >
@@ -91,19 +95,19 @@ export function ConversationItem({ conversation, isActive, onClick, onDelete }: 
           </AlertDialogTrigger>
           <AlertDialogContent className="bg-black/90 border-neutral-800 backdrop-blur-xl">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-white">Delete Conversation?</AlertDialogTitle>
+              <AlertDialogTitle className="text-white">{t("deleteTitle")}</AlertDialogTitle>
               <AlertDialogDescription className="text-neutral-400">
-                Are you sure you want to delete this conversation? This action cannot be undone.
+                {t("deleteDescription")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-700 hover:text-white">Cancel</AlertDialogCancel>
-              <AlertDialogAction 
+              <AlertDialogCancel className="bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-700 hover:text-white">{t("cancel")}</AlertDialogCancel>
+              <AlertDialogAction
                 onClick={confirmDelete}
                 disabled={isPending}
                 className="bg-red-600 text-white hover:bg-red-700 border-none"
               >
-                {isPending ? "Deleting..." : "Delete"}
+                {isPending ? t("deleting") : t("delete")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

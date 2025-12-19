@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useSummarize } from "@/hooks/use-summarize";
 import { useAuth } from "@/hooks/use-auth";
 import { useClaimConversation } from "@/hooks/use-claim";
@@ -6,15 +6,25 @@ import { useConversation } from "@/hooks/use-conversation";
 import { toast } from "sonner";
 import { Message } from "@/hooks/use-chat";
 import { Role } from "@/lib/types";
-
-const LOADING_STEPS = [
-    "Fetching playlist data...",
-    "Extracting video transcripts...",
-    "Analyzing content with Gemini...",
-    "Generating summary...",
-];
+import { useTranslations } from "next-intl";
 
 export function useHomeView() {
+    const t = useTranslations("toast");
+    const tLoading = useTranslations("loading");
+    const tCommon = useTranslations("common");
+    const tTime = useTranslations("time");
+
+    // Translated loading steps
+    const loadingSteps = useMemo(
+        () => [
+            tLoading("fetchingPlaylist"),
+            tLoading("extractingTranscripts"),
+            tLoading("analyzingContent"),
+            tLoading("generatingSummary"),
+        ],
+        [tLoading]
+    );
+
     // URL input state
     const [url, setUrl] = useState("");
 
@@ -43,7 +53,7 @@ export function useHomeView() {
     const displayTitle =
         conversationData?.title ||
         (isJustSummarized ? summaryData?.playlist_title : null) ||
-        "Playlist Summary";
+        tCommon("playlistSummary");
 
     const displaySummary =
         conversationData?.summary ||
@@ -51,7 +61,7 @@ export function useHomeView() {
 
     const displayDate = conversationData?.created_at
         ? new Date(conversationData.created_at).toLocaleDateString()
-        : "Just now";
+        : tTime("justNow");
 
     const initialMessages: Message[] =
         conversationData?.messages.map((m) => ({
@@ -72,7 +82,7 @@ export function useHomeView() {
 
     const handleSubmit = useCallback(() => {
         if (!url) {
-            toast.error("Please enter a playlist URL");
+            toast.error(t("error.enterPlaylistUrl"));
             return;
         }
 
@@ -81,22 +91,22 @@ export function useHomeView() {
 
         const interval = setInterval(() => {
             setLoadingStep((prev) =>
-                prev < LOADING_STEPS.length - 1 ? prev + 1 : prev
+                prev < loadingSteps.length - 1 ? prev + 1 : prev
             );
         }, 2000);
 
         summarize(url, {
             onSuccess: (result) => {
                 clearInterval(interval);
-                toast.success("Summary generated successfully!");
+                toast.success(t("success.summaryGenerated"));
                 setActiveConversationId(result.conversation_id);
             },
             onError: (err) => {
                 clearInterval(interval);
-                toast.error(err.message || "Failed to generate summary");
+                toast.error(err.message || t("error.failedToGenerate"));
             },
         });
-    }, [url, summarize]);
+    }, [url, summarize, loadingSteps.length, t]);
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -111,14 +121,14 @@ export function useHomeView() {
         if (activeConversationId) {
             claimConversation(activeConversationId, {
                 onSuccess: () => {
-                    toast.success("Conversation claimed successfully!");
+                    toast.success(t("success.conversationClaimed"));
                 },
                 onError: () => {
-                    toast.error("Failed to claim conversation.");
+                    toast.error(t("error.failedToClaim"));
                 },
             });
         }
-    }, [activeConversationId, claimConversation]);
+    }, [activeConversationId, claimConversation, t]);
 
     const handleDeleteConversation = useCallback(
         (id: string) => {
@@ -138,7 +148,7 @@ export function useHomeView() {
         url,
         activeConversationId,
         loadingStep,
-        loadingSteps: LOADING_STEPS,
+        loadingSteps,
         isMobileMenuOpen,
         isAuthModalOpen,
         isSummarizing,

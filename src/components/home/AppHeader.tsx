@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { LogOut, Menu, Sparkles, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface AppHeaderProps {
     isAuthenticated: boolean;
@@ -22,6 +23,8 @@ export function AppHeader({
     onLogout,
     onSignIn,
 }: AppHeaderProps) {
+    const t = useTranslations("header");
+
     return (
         <div className="absolute top-4 left-4 right-4 z-50 flex justify-between items-center pointer-events-none">
             {/* Left side - Mobile Menu & New Summary */}
@@ -43,7 +46,7 @@ export function AppHeader({
                         className="text-neutral-400 hover:text-white"
                     >
                         <Sparkles className="w-4 h-4 mr-2" />
-                        New Summary
+                        {t("newSummary")}
                     </Button>
                 )}
             </div>
@@ -59,7 +62,7 @@ export function AppHeader({
                             variant="ghost"
                             size="icon"
                             onClick={onLogout}
-                            title="Sign Out"
+                            title={t("signOut")}
                         >
                             <LogOut className="w-5 h-5 text-neutral-400 hover:text-white" />
                         </Button>
@@ -71,7 +74,7 @@ export function AppHeader({
                         className="text-neutral-400 hover:text-white"
                     >
                         <User className="w-5 h-5 mr-2" />
-                        Sign In
+                        {t("signIn")}
                     </Button>
                 )}
             </div>

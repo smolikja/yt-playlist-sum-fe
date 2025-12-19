@@ -1,0 +1,103 @@
+{
+    "hero": {
+        "title": "YouTube Playlist Summarizer",
+        "description": "Transform hours of video content into concise, actionable summaries using advanced AI. Just paste your YouTube playlist URL below.",
+        "button": "Summarize Playlist",
+        "placeholder": "https://www.youtube.com/playlist?list=..."
+    },
+    "header": {
+        "newSummary": "New Summary",
+        "signIn": "Sign In",
+        "signOut": "Sign Out"
+    },
+    "sidebar": {
+        "newChat": "New Chat",
+        "history": "History"
+    },
+    "auth": {
+        "welcomeBack": "Welcome Back",
+        "createAccount": "Create Account",
+        "email": "Email",
+        "emailPlaceholder": "you@example.com",
+        "password": "Password",
+        "passwordPlaceholder": "••••••••",
+        "confirmPassword": "Confirm Password",
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "noAccount": "Don't have an account? Sign up",
+        "hasAccount": "Already have an account? Sign in",
+        "errors": {
+            "fillAllFields": "Please fill in all fields",
+            "passwordsNoMatch": "Passwords do not match",
+            "passwordTooShort": "Password must be at least 8 characters",
+            "emailExists": "This email is already registered.",
+            "invalidCredentials": "Invalid email or password.",
+            "invalidEmail": "Please enter a valid email address.",
+            "authFailed": "Authentication failed"
+        },
+        "success": {
+            "accountCreated": "Account created! Logging you in...",
+            "welcomeBack": "Welcome back!",
+            "welcome": "Welcome!"
+        }
+    },
+    "chat": {
+        "fastModeOn": "Fast Mode On",
+        "deepModeOn": "Deep Mode On",
+        "fastModeDesc": "Quick answers from summary",
+        "deepModeDesc": "Detailed answers from transcripts",
+        "placeholder": "Ask about this playlist..."
+    },
+    "conversations": {
+        "untitled": "Untitled Conversation",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "cancel": "Cancel",
+        "deleteTitle": "Delete Conversation?",
+        "deleteDescription": "Are you sure you want to delete this conversation? This action cannot be undone.",
+        "noHistory": "No history found.",
+        "loadFailed": "Failed to load history."
+    },
+    "detail": {
+        "syncingConversation": "Syncing conversation...",
+        "loadFailed": "Failed to load conversation."
+    },
+    "loading": {
+        "fetchingPlaylist": "Fetching playlist data...",
+        "extractingTranscripts": "Extracting video transcripts...",
+        "analyzingContent": "Analyzing content with Gemini...",
+        "generatingSummary": "Generating summary..."
+    },
+    "toast": {
+        "success": {
+            "summaryGenerated": "Summary generated successfully!",
+            "conversationDeleted": "Conversation deleted",
+            "conversationClaimed": "Conversation claimed successfully!"
+        },
+        "error": {
+            "enterPlaylistUrl": "Please enter a playlist URL",
+            "failedToGenerate": "Failed to generate summary",
+            "failedToDelete": "Failed to delete conversation",
+            "failedToClaim": "Failed to claim conversation."
+        }
+    },
+    "time": {
+        "justNow": "Just now",
+        "minutesAgo": "{count} min ago",
+        "hoursAgo": "{count}h ago",
+        "yesterday": "Yesterday",
+        "daysAgo": "{count}d ago",
+        "today": "Today",
+        "previous7Days": "Previous 7 Days",
+        "older": "Older"
+    },
+    "metadata": {
+        "title": "YouTube Playlist Summarizer | AI-Powered Video Summaries",
+        "description": "Transform hours of YouTube playlist content into concise, actionable summaries using advanced AI. Get instant insights from any playlist.",
+        "ogTitle": "YouTube Playlist Summarizer",
+        "ogDescription": "AI-powered summaries for YouTube playlists"
+    },
+    "common": {
+        "playlistSummary": "Playlist Summary"
+    }
+}
