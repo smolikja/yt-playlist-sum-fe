@@ -1,8 +1,11 @@
 "use client";
 
+import { RefObject } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { LogOut, Menu, Sparkles, User } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useScrollDirection } from "@/hooks/use-scroll-direction";
 
 interface AppHeaderProps {
     isAuthenticated: boolean;
@@ -12,6 +15,7 @@ interface AppHeaderProps {
     onNewChat: () => void;
     onLogout: () => void;
     onSignIn: () => void;
+    scrollContainerRef?: RefObject<HTMLElement | null>;
 }
 
 export function AppHeader({
@@ -22,13 +26,20 @@ export function AppHeader({
     onNewChat,
     onLogout,
     onSignIn,
+    scrollContainerRef,
 }: AppHeaderProps) {
     const t = useTranslations("header");
+    const isHeaderVisible = useScrollDirection(scrollContainerRef);
 
     return (
-        <div className="absolute top-4 left-4 right-4 z-50 flex justify-between items-center pointer-events-none">
+        <motion.header
+            initial={{ y: 0 }}
+            animate={{ y: isHeaderVisible ? 0 : "-100%" }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="fixed top-0 left-0 right-0 z-50 px-4 py-3 md:py-4 bg-black/40 backdrop-blur-md border-b border-white/5 flex justify-between items-center"
+        >
             {/* Left side - Mobile Menu & New Summary */}
-            <div className="pointer-events-auto flex items-center gap-2">
+            <div className="flex items-center gap-2">
                 {isAuthenticated && (
                     <Button
                         variant="ghost"
@@ -52,7 +63,7 @@ export function AppHeader({
             </div>
 
             {/* Right side - User Controls */}
-            <div className="flex items-center gap-4 pointer-events-auto">
+            <div className="flex items-center gap-4">
                 {isAuthenticated ? (
                     <>
                         <div className="text-white text-sm hidden md:block">
@@ -78,6 +89,6 @@ export function AppHeader({
                     </Button>
                 )}
             </div>
-        </div>
+        </motion.header>
     );
 }

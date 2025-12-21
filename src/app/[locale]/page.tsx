@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useHomeView } from "@/hooks/use-home-view";
 import { HeroSection, AppHeader, DetailView } from "@/components/home";
 import { Sidebar, MobileSidebar } from "@/components/chat/sidebar";
@@ -15,6 +16,7 @@ type Props = {
 
 export default function Home({ params }: Props) {
     const { locale } = use(params);
+    const mainRef = useRef<HTMLElement>(null);
 
     const {
         // State
@@ -76,7 +78,7 @@ export default function Home({ params }: Props) {
                 />
             )}
 
-            <main className="flex-1 h-full overflow-y-auto relative w-full">
+            <main ref={mainRef} className="flex-1 h-full overflow-y-auto relative w-full">
                 <Spotlight
                     className="-top-40 left-0 md:left-60 md:-top-20 fixed"
                     fill="white"
@@ -91,6 +93,7 @@ export default function Home({ params }: Props) {
                     onNewChat={handleNewChat}
                     onLogout={handleLogout}
                     onSignIn={() => setAuthModalOpen(true)}
+                    scrollContainerRef={mainRef}
                 />
 
                 {/* Main Content */}
