@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Menu, Sparkles, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
+import { cn } from "@/lib/utils";
 
 interface AppHeaderProps {
     isAuthenticated: boolean;
@@ -36,7 +37,10 @@ export function AppHeader({
             initial={{ y: 0 }}
             animate={{ y: isHeaderVisible ? 0 : "-100%" }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="fixed top-0 left-0 right-0 z-50 px-4 py-3 md:py-4 bg-black/40 backdrop-blur-md border-b border-white/5 flex justify-between items-center"
+            className={cn(
+                "fixed top-0 right-0 z-50 px-4 py-3 md:py-4 bg-black/40 backdrop-blur-md border-b border-white/5 flex justify-between items-center",
+                isAuthenticated ? "left-0 md:left-64" : "left-0"
+            )}
         >
             {/* Left side - Mobile Menu & New Summary */}
             <div className="flex items-center gap-2">
