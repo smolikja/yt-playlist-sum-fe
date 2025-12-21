@@ -31,12 +31,13 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
   // Reset state when view changes or modal closes
   useEffect(() => {
     if (!isOpen) {
+      setView(initialView);
       setEmail("");
       setPassword("");
       setConfirmPassword("");
       setErrors({});
     }
-  }, [isOpen]);
+  }, [isOpen, initialView]);
 
   const toggleView = () => {
     setView(view === "login" ? "register" : "login");
