@@ -99,5 +99,10 @@
     },
     "common": {
         "playlistSummary": "Shrnutí playlistu"
+    },
+    "theme": {
+        "dark": "Tmavý režim",
+        "light": "Světlý režim",
+        "system": "Systémový"
     }
 }

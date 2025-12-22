@@ -53,7 +53,7 @@ export default function Home({ params }: Props) {
     } = useHomeView();
 
     return (
-        <div className="flex h-screen w-full overflow-hidden bg-black/[0.96] antialiased bg-grid-white/[0.02]">
+        <div className="flex h-screen w-full overflow-hidden bg-background dark:bg-black/[0.96] antialiased bg-grid-foreground/[0.02] dark:bg-grid-white/[0.02]">
             {/* Desktop Sidebar */}
             {isAuthenticated && (
                 <div className="hidden md:flex h-full">

@@ -39,10 +39,10 @@ export function HeroSection({
             className="flex flex-col items-center w-full flex-1 justify-center"
         >
             <motion.div layout className="text-center mb-12">
-                <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-4">
+                <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-slate-800 to-slate-500 dark:from-neutral-50 dark:to-neutral-400 bg-opacity-50 pb-4">
                     {t("title")}
                 </h1>
-                <p className="mt-8 font-normal text-base text-neutral-300 max-w-lg mx-auto">
+                <p className="mt-8 font-normal text-base text-muted-foreground max-w-lg mx-auto">
                     {t("description")}
                 </p>
             </motion.div>

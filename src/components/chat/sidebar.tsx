@@ -19,8 +19,8 @@ export function Sidebar({ className, selectedId, onSelect, onNewChat, onDelete }
   const t = useTranslations("sidebar");
 
   return (
-    <div className={cn("flex flex-col h-full bg-black/40 backdrop-blur-xl border-r border-white/10 w-64", className)}>
-      <div className="p-4 border-b border-white/10">
+    <div className={cn("flex flex-col h-full bg-background/80 dark:bg-black/40 backdrop-blur-xl border-r border-border w-64", className)}>
+      <div className="p-4 border-b border-border">
         <Button
           onClick={onNewChat}
           className="w-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2"
@@ -65,9 +65,9 @@ export function MobileSidebar({ open, onOpenChange, selectedId, onSelect, onNewC
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="bg-black/90 border-r border-white/10 p-0 w-72">
-        <SheetHeader className="p-4 border-b border-white/10 text-left">
-          <SheetTitle className="flex items-center gap-2 text-white">
+      <SheetContent className="bg-background/95 dark:bg-black/90 border-r border-border p-0 w-72">
+        <SheetHeader className="p-4 border-b border-border text-left">
+          <SheetTitle className="flex items-center gap-2 text-foreground">
             <MessageSquare className="w-5 h-5 text-indigo-500" />
             {t("history")}
           </SheetTitle>

@@ -33,7 +33,7 @@ const Sheet = ({ open, onOpenChange, children }: SheetProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => onOpenChange(false)}
-            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-background/80 dark:bg-black/80 backdrop-blur-sm"
           />
           {/* Drawer */}
           <motion.div
@@ -41,14 +41,14 @@ const Sheet = ({ open, onOpenChange, children }: SheetProps) => {
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "tween", ease: "linear", duration: 0.25 }}
-            className="fixed inset-y-0 left-0 z-[60] h-full w-3/4 gap-4 border-r border-neutral-800 bg-black shadow-2xl sm:max-w-sm overflow-hidden"
+            className="fixed inset-y-0 left-0 z-[60] h-full w-3/4 gap-4 border-r border-border bg-background dark:bg-black shadow-2xl sm:max-w-sm overflow-hidden"
           >
             {children}
             <button
               onClick={() => onOpenChange(false)}
               className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
             >
-              <X className="h-4 w-4 text-neutral-400" />
+              <X className="h-4 w-4 text-muted-foreground" />
               <span className="sr-only">Close</span>
             </button>
           </motion.div>
@@ -71,7 +71,7 @@ const SheetHeader = ({ children, className }: { children: React.ReactNode, class
 }
 
 const SheetTitle = ({ children, className }: { children: React.ReactNode, className?: string }) => {
-  return <div className={cn("text-lg font-semibold text-neutral-200", className)}>{children}</div>
+  return <div className={cn("text-lg font-semibold text-foreground", className)}>{children}</div>
 }
 
 export { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle }

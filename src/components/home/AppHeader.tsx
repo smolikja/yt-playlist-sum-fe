@@ -3,6 +3,7 @@
 import { RefObject } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LogOut, Menu, Sparkles, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
@@ -38,7 +39,7 @@ export function AppHeader({
             animate={{ y: isHeaderVisible ? 0 : "-100%" }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
             className={cn(
-                "fixed top-0 right-0 z-50 px-4 py-3 md:py-4 bg-black/40 backdrop-blur-md border-b border-white/5 flex justify-between items-center",
+                "fixed top-0 right-0 z-50 px-4 py-3 md:py-4 bg-background/80 dark:bg-black/40 backdrop-blur-md border-b border-border/50 flex justify-between items-center",
                 isAuthenticated ? "left-0 md:left-64" : "left-0"
             )}
         >
@@ -49,7 +50,7 @@ export function AppHeader({
                         variant="ghost"
                         size="icon"
                         onClick={onMenuOpen}
-                        className="md:hidden text-white"
+                        className="md:hidden text-foreground"
                     >
                         <Menu className="w-5 h-5" />
                     </Button>
@@ -58,7 +59,7 @@ export function AppHeader({
                     <Button
                         variant="ghost"
                         onClick={onNewChat}
-                        className="text-neutral-400 hover:text-white"
+                        className="text-muted-foreground hover:text-foreground"
                     >
                         <Sparkles className="w-4 h-4 mr-2" />
                         {t("newSummary")}
@@ -67,10 +68,11 @@ export function AppHeader({
             </div>
 
             {/* Right side - User Controls */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
+                <ThemeToggle />
                 {isAuthenticated ? (
                     <>
-                        <div className="text-white text-sm hidden md:block">
+                        <div className="text-foreground text-sm hidden md:block">
                             {userEmail}
                         </div>
                         <Button
@@ -79,14 +81,14 @@ export function AppHeader({
                             onClick={onLogout}
                             title={t("signOut")}
                         >
-                            <LogOut className="w-5 h-5 text-neutral-400 hover:text-white" />
+                            <LogOut className="w-5 h-5 text-muted-foreground hover:text-foreground" />
                         </Button>
                     </>
                 ) : (
                     <Button
                         variant="ghost"
                         onClick={onSignIn}
-                        className="text-neutral-400 hover:text-white"
+                        className="text-muted-foreground hover:text-foreground"
                     >
                         <User className="w-5 h-5 mr-2" />
                         {t("signIn")}
@@ -96,3 +98,4 @@ export function AppHeader({
         </motion.header>
     );
 }
+

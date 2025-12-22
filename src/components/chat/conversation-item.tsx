@@ -50,8 +50,8 @@ export function ConversationItem({ conversation, isActive, onClick, onDelete }: 
       className={cn(
         "group relative w-full flex flex-col items-start gap-2 p-3 rounded-lg border transition-all duration-300 text-left cursor-pointer pr-8",
         isActive
-          ? "bg-neutral-800/80 border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
-          : "bg-neutral-900/30 border-neutral-800/50 hover:bg-neutral-800/50 hover:border-neutral-700"
+          ? "bg-muted dark:bg-neutral-800/80 border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
+          : "bg-muted/30 dark:bg-neutral-900/30 border-border/50 hover:bg-muted/60 dark:hover:bg-neutral-800/50 hover:border-border"
       )}
     >
       {/* Active Indicator Line */}
@@ -63,21 +63,21 @@ export function ConversationItem({ conversation, isActive, onClick, onDelete }: 
       )}
 
       <div className="flex items-center gap-2 w-full">
-        <MessageSquare className={cn("w-4 h-4", isActive ? "text-indigo-400" : "text-neutral-500")} />
-        <span className={cn("text-sm font-medium truncate w-full", isActive ? "text-neutral-200" : "text-neutral-400 group-hover:text-neutral-300")}>
+        <MessageSquare className={cn("w-4 h-4", isActive ? "text-indigo-400" : "text-muted-foreground")} />
+        <span className={cn("text-sm font-medium truncate w-full", isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")}>
           {conversation.title || t("untitled")}
         </span>
       </div>
 
       {conversation.summary_snippet && (
-        <p className="text-xs text-neutral-500 line-clamp-2 pl-6">
+        <p className="text-xs text-muted-foreground line-clamp-2 pl-6">
           {conversation.summary_snippet}
         </p>
       )}
 
       <div className="flex items-center gap-1 pl-6 mt-1">
-        <Clock className="w-3 h-3 text-neutral-600" />
-        <span className="text-[10px] text-neutral-600">
+        <Clock className="w-3 h-3 text-muted-foreground/60" />
+        <span className="text-[10px] text-muted-foreground/60">
           {formatRelativeTime(conversation.updated_at || conversation.created_at)}
         </span>
       </div>
@@ -89,19 +89,19 @@ export function ConversationItem({ conversation, isActive, onClick, onDelete }: 
       >
         <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
           <AlertDialogTrigger asChild>
-            <button className="p-1 text-neutral-500 hover:text-red-500 hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] transition-all">
+            <button className="p-1 text-muted-foreground hover:text-red-500 hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] transition-all">
               <Trash className="w-4 h-4" />
             </button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="bg-black/90 border-neutral-800 backdrop-blur-xl">
+          <AlertDialogContent className="bg-card/95 dark:bg-black/90 border-border backdrop-blur-xl">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-white">{t("deleteTitle")}</AlertDialogTitle>
-              <AlertDialogDescription className="text-neutral-400">
+              <AlertDialogTitle className="text-foreground">{t("deleteTitle")}</AlertDialogTitle>
+              <AlertDialogDescription className="text-muted-foreground">
                 {t("deleteDescription")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-700 hover:text-white">{t("cancel")}</AlertDialogCancel>
+              <AlertDialogCancel className="bg-muted dark:bg-neutral-800 text-foreground border-border hover:bg-muted/80 dark:hover:bg-neutral-700 hover:text-foreground">{t("cancel")}</AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmDelete}
                 disabled={isPending}

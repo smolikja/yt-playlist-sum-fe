@@ -59,10 +59,10 @@ export function DetailView({
                     {/* Chat Interface */}
                     {isAuthenticated ? (
                         isClaiming ? (
-                            <div className="h-[200px] flex items-center justify-center border border-neutral-800 rounded-xl bg-neutral-900/50">
+                            <div className="h-[200px] flex items-center justify-center border border-border rounded-xl bg-muted/50 dark:bg-neutral-900/50">
                                 <div className="flex flex-col items-center gap-2">
                                     <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-                                    <p className="text-neutral-400">{t("syncingConversation")}</p>
+                                    <p className="text-muted-foreground">{t("syncingConversation")}</p>
                                 </div>
                             </div>
                         ) : (
@@ -80,7 +80,7 @@ export function DetailView({
                     )}
                 </div>
             ) : (
-                <div className="text-center text-neutral-500 mt-20">
+                <div className="text-center text-muted-foreground mt-20">
                     {t("loadFailed")}
                 </div>
             )}

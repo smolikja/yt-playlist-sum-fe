@@ -99,5 +99,10 @@
     },
     "common": {
         "playlistSummary": "Playlist Summary"
+    },
+    "theme": {
+        "dark": "Dark mode",
+        "light": "Light mode",
+        "system": "System"
     }
 }

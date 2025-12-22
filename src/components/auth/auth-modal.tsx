@@ -123,7 +123,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-background/60 dark:bg-black/60 backdrop-blur-sm"
           />
 
           {/* Modal */}
@@ -131,16 +131,16 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-md bg-card dark:bg-zinc-950 border border-border rounded-xl shadow-2xl overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-zinc-800">
-              <h2 className="text-xl font-bold text-white">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h2 className="text-xl font-bold text-foreground">
                 {view === "login" ? t("welcomeBack") : t("createAccount")}
               </h2>
               <button
                 onClick={onClose}
-                className="text-zinc-400 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -149,9 +149,9 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400 ml-1">{t("email")}</label>
+                <label className="text-sm font-medium text-muted-foreground ml-1">{t("email")}</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
+                  <Mail className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground z-10" />
                   <InputWithGlow
                     type="email"
                     placeholder={t("emailPlaceholder")}
@@ -169,9 +169,9 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400 ml-1">{t("password")}</label>
+                <label className="text-sm font-medium text-muted-foreground ml-1">{t("password")}</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
+                  <Lock className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground z-10" />
                   <InputWithGlow
                     type="password"
                     placeholder={t("passwordPlaceholder")}
@@ -197,9 +197,9 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2 overflow-hidden"
                   >
-                    <label className="text-sm font-medium text-zinc-400 ml-1">{t("confirmPassword")}</label>
+                    <label className="text-sm font-medium text-muted-foreground ml-1">{t("confirmPassword")}</label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500 z-10" />
+                      <Lock className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground z-10" />
                       <InputWithGlow
                         type="password"
                         placeholder={t("passwordPlaceholder")}
@@ -246,7 +246,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
                 <button
                   type="button"
                   onClick={toggleView}
-                  className="text-sm text-zinc-500 hover:text-indigo-400 transition-colors"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
                   disabled={isLoading}
                 >
                   {view === "login"

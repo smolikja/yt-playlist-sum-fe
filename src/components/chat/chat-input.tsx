@@ -40,13 +40,13 @@ export function ChatInput({ onSend, isLoading, onInteract }: ChatInputProps) {
     };
 
     return (
-        <div className="sticky bottom-0 z-30 w-full pt-2 pb-6 bg-gradient-to-t from-black via-black/80 to-transparent px-4">
+        <div className="sticky bottom-0 z-30 w-full pt-2 pb-6 bg-gradient-to-t from-background via-background/80 to-transparent dark:from-black dark:via-black/80 px-4">
             <div className="max-w-2xl mx-auto flex items-center justify-center">
 
                 <div className="relative flex items-center w-full rounded-2xl p-[2px] overflow-hidden">
                     <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
 
-                    <div className="relative flex items-center w-full h-full rounded-2xl bg-zinc-950">
+                    <div className="relative flex items-center w-full h-full rounded-2xl bg-card dark:bg-zinc-950">
                         {/* Integrated Toggle Button (Left) */}
                         <div className="absolute left-2 top-1.5 z-10">
                             <TooltipProvider>
@@ -60,15 +60,15 @@ export function ChatInput({ onSend, isLoading, onInteract }: ChatInputProps) {
                                                 "h-9 w-9 rounded-xl transition-all",
                                                 isFastMode
                                                     ? "text-yellow-500 hover:text-yellow-400 bg-yellow-500/10 hover:bg-yellow-500/20"
-                                                    : "text-zinc-500 hover:text-zinc-400 hover:bg-zinc-800"
+                                                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                             )}
                                         >
                                             <Zap className={cn("h-4 w-4", isFastMode && "fill-yellow-500")} />
                                         </Button>
                                     </TooltipTrigger>
-                                    <TooltipContent side="top" className="bg-zinc-900 border-zinc-800 text-zinc-100">
+                                    <TooltipContent side="top" className="bg-card dark:bg-zinc-900 border-border dark:border-zinc-800 text-foreground dark:text-zinc-100">
                                         <p className="font-semibold">{isFastMode ? t("fastModeOn") : t("deepModeOn")}</p>
-                                        <p className="text-xs text-zinc-400">
+                                        <p className="text-xs text-muted-foreground">
                                             {isFastMode ? t("fastModeDesc") : t("deepModeDesc")}
                                         </p>
                                     </TooltipContent>
@@ -102,7 +102,7 @@ export function ChatInput({ onSend, isLoading, onInteract }: ChatInputProps) {
                                     "h-10 w-10 rounded-xl transition-all",
                                     input.trim()
                                         ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20"
-                                        : "bg-zinc-800 text-zinc-500"
+                                        : "bg-muted dark:bg-zinc-800 text-muted-foreground"
                                 )}
                             >
                                 <SendHorizonal className="h-4 w-4" />
