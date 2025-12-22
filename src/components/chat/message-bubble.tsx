@@ -31,7 +31,7 @@ export function MessageBubble({ role, content }: MessageBubbleProps) {
 
             {/* Message Content */}
             <div className={cn(
-                "relative max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
+                "relative max-w-[95%] md:max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
                 isUser
                     ? "bg-blue-600 text-white"
                     : "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700"
