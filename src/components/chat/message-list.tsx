@@ -10,23 +10,18 @@ interface MessageListProps {
 
 export function MessageList({ messages, isLoading, conversationId }: MessageListProps) {
     const bottomRef = useRef<HTMLDivElement>(null);
-    const prevConversationIdRef = useRef(conversationId);
+    const prevConversationIdRef = useRef<string | null>(null);
 
     useEffect(() => {
         const isConversationChange = prevConversationIdRef.current !== conversationId;
-        const behavior = isConversationChange ? "instant" : "smooth"; // 'auto' is effectively instant
 
-        // Ensure we scroll if there are messages or if loading
-        if (messages.length > 0 || isLoading) {
-            // Use 'auto' instead of 'instant' for better compatibility if needed, 
-            // but 'instant' is supported in modern browsers for scrollIntoView options 
-            // (though TS might complain about ScrollBehavior). 
-            // Actually, for scrollIntoView, the values are "auto" | "smooth". "auto" is instant.
-            bottomRef.current?.scrollIntoView({ behavior: behavior === "instant" ? "auto" : "smooth" });
+        // Only scroll on conversation change, not on new messages
+        if (isConversationChange && (messages.length > 0 || isLoading)) {
+            bottomRef.current?.scrollIntoView({ behavior: "auto" });
         }
 
         prevConversationIdRef.current = conversationId;
-    }, [messages, isLoading, conversationId]);
+    }, [conversationId, messages.length, isLoading]);
 
     return (
         <div className="w-full space-y-6 px-4">

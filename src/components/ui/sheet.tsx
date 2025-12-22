@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
@@ -10,6 +11,18 @@ interface SheetProps {
 }
 
 const Sheet = ({ open, onOpenChange, children }: SheetProps) => {
+  // Lock body scroll when sheet is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [open])
+
   return (
     <AnimatePresence>
       {open && (
@@ -20,15 +33,15 @@ const Sheet = ({ open, onOpenChange, children }: SheetProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => onOpenChange(false)}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm"
           />
           {/* Drawer */}
           <motion.div
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="fixed inset-y-0 left-0 z-50 h-full w-3/4 gap-4 border-r border-neutral-800 bg-black p-6 shadow-2xl transition ease-in-out sm:max-w-sm"
+            transition={{ type: "tween", ease: "linear", duration: 0.25 }}
+            className="fixed inset-y-0 left-0 z-[60] h-full w-3/4 gap-4 border-r border-neutral-800 bg-black shadow-2xl sm:max-w-sm overflow-hidden"
           >
             {children}
             <button
@@ -46,19 +59,19 @@ const Sheet = ({ open, onOpenChange, children }: SheetProps) => {
 }
 
 const SheetTrigger = ({ children, onClick }: { children: React.ReactNode, onClick: () => void }) => {
-    return <div onClick={onClick}>{children}</div>
+  return <div onClick={onClick}>{children}</div>
 }
 
 const SheetContent = ({ children, className }: { children: React.ReactNode, className?: string }) => {
-    return <div className={cn("h-full flex flex-col", className)}>{children}</div>
+  return <div className={cn("h-full w-full flex flex-col overflow-hidden", className)}>{children}</div>
 }
 
 const SheetHeader = ({ children, className }: { children: React.ReactNode, className?: string }) => {
-    return <div className={cn("flex flex-col space-y-2 text-center sm:text-left", className)}>{children}</div>
+  return <div className={cn("flex flex-col space-y-2 text-center sm:text-left", className)}>{children}</div>
 }
 
 const SheetTitle = ({ children, className }: { children: React.ReactNode, className?: string }) => {
-    return <div className={cn("text-lg font-semibold text-neutral-200", className)}>{children}</div>
+  return <div className={cn("text-lg font-semibold text-neutral-200", className)}>{children}</div>
 }
 
 export { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle }
