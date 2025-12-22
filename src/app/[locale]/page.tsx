@@ -38,6 +38,7 @@ export default function Home({ params }: Props) {
         displayTitle,
         displaySummary,
         displayDate,
+        displayPlaylistUrl,
         initialMessages,
         // Actions
         setUrl,
@@ -123,6 +124,7 @@ export default function Home({ params }: Props) {
                                 displayTitle={displayTitle}
                                 displayDate={displayDate}
                                 displaySummary={displaySummary}
+                                playlistUrl={displayPlaylistUrl}
                                 initialMessages={initialMessages}
                                 isAuthenticated={isAuthenticated}
                                 isClaiming={isClaiming}

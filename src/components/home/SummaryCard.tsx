@@ -8,18 +8,30 @@ interface SummaryCardProps {
     title: string;
     date: string;
     summary: string;
+    playlistUrl?: string;
 }
 
-export function SummaryCard({ title, date, summary }: SummaryCardProps) {
+export function SummaryCard({ title, date, summary, playlistUrl }: SummaryCardProps) {
     return (
         <div className="bg-card/80 dark:bg-neutral-900/50 border border-border backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-2xl relative overflow-hidden group mb-8">
             <BorderBeam size={300} duration={20} delay={0} />
             <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
 
             <div className="flex items-center gap-3 mb-6 border-b border-border pb-4">
-                <Youtube className="w-6 h-6 text-red-500" />
-                <div>
-                    <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+                <Youtube className="w-6 h-6 text-red-500 shrink-0" />
+                <div className="min-w-0">
+                    {playlistUrl ? (
+                        <a
+                            href={playlistUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-lg font-semibold text-foreground hover:text-primary transition-colors truncate block"
+                        >
+                            {title}
+                        </a>
+                    ) : (
+                        <h2 className="text-lg font-semibold text-foreground truncate">{title}</h2>
+                    )}
                     <p className="text-xs text-muted-foreground">{date}</p>
                 </div>
             </div>

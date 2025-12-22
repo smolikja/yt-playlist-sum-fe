@@ -63,6 +63,9 @@ export function useHomeView() {
         ? new Date(conversationData.created_at).toLocaleDateString()
         : tTime("justNow");
 
+    // URL is available from backend response or from just-summarized state
+    const displayPlaylistUrl = conversationData?.playlist_url || (isJustSummarized ? url : undefined);
+
     const initialMessages: Message[] =
         conversationData?.messages.map((m) => ({
             role: m.role as Role,
@@ -165,6 +168,7 @@ export function useHomeView() {
         displayTitle,
         displaySummary,
         displayDate,
+        displayPlaylistUrl,
         initialMessages,
 
         // Actions

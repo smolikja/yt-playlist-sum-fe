@@ -14,6 +14,7 @@ interface DetailViewProps {
     displayTitle: string;
     displayDate: string;
     displaySummary: string | null;
+    playlistUrl?: string;
     initialMessages: Message[];
     isAuthenticated: boolean;
     isClaiming: boolean;
@@ -27,6 +28,7 @@ export function DetailView({
     displayTitle,
     displayDate,
     displaySummary,
+    playlistUrl,
     initialMessages,
     isAuthenticated,
     isClaiming,
@@ -54,6 +56,7 @@ export function DetailView({
                         title={displayTitle}
                         date={displayDate}
                         summary={displaySummary}
+                        playlistUrl={playlistUrl}
                     />
 
                     {/* Chat Interface */}

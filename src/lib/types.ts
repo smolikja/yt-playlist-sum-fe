@@ -47,8 +47,10 @@ export interface ConversationResponse {
 export interface ConversationDetailResponse {
   id: string;
   title: string | null;
+  playlist_url: string | null;
   summary: string;
   created_at: string;
+  updated_at: string;
   messages: MessageResponse[];
 }
 
