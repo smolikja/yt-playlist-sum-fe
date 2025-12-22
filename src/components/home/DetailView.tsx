@@ -67,12 +67,14 @@ export function DetailView({
                             </div>
                         ) : (
                             <ChatContainer
+                                key={conversationId}
                                 conversationId={conversationId}
                                 initialMessages={initialMessages}
                             />
                         )
                     ) : (
                         <ChatContainer
+                            key={conversationId}
                             conversationId={conversationId}
                             initialMessages={initialMessages}
                             onInteract={onAuthRequired}
