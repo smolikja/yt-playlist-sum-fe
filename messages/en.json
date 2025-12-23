@@ -93,9 +93,13 @@
     },
     "metadata": {
         "title": "YouTube Playlist Summarizer | AI-Powered Video Summaries",
-        "description": "Transform hours of YouTube playlist content into concise, actionable summaries using advanced AI. Get instant insights from any playlist.",
-        "ogTitle": "YouTube Playlist Summarizer",
-        "ogDescription": "AI-powered summaries for YouTube playlists"
+        "titleTemplate": "%s | YouTube Playlist Summarizer",
+        "description": "Summarize entire YouTube playlists instantly with AI. Unlike single video summarizers, our tool processes complete playlists and lets you chat with the content. Save hours of watching time.",
+        "ogTitle": "YouTube Playlist Summarizer - AI Summaries for Complete Playlists",
+        "ogDescription": "The only AI tool that summarizes entire YouTube playlists, not just single videos. Get instant insights and chat with your playlist content.",
+        "keywords": "YouTube playlist summarizer, AI video summary, summarize YouTube playlist, playlist to text, YouTube AI summary, video transcript summary, bulk video summarizer, playlist analyzer, YouTube content summarizer, AI playlist analysis",
+        "author": "YouTube Playlist Summarizer",
+        "applicationName": "YouTube Playlist Summarizer"
     },
     "common": {
         "playlistSummary": "Playlist Summary"

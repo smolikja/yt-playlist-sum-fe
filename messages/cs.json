@@ -92,10 +92,14 @@
         "older": "Starší"
     },
     "metadata": {
-        "title": "Shrnutí YouTube Playlistů | AI Video Souhrny",
-        "description": "Přeměňte hodiny obsahu z YouTube playlistů na stručná, praktická shrnutí pomocí pokročilé umělé inteligence.",
-        "ogTitle": "Shrnutí YouTube Playlistů",
-        "ogDescription": "AI shrnutí pro YouTube playlisty"
+        "title": "YouTube Playlist Summarizer | AI Shrnutí Videí",
+        "titleTemplate": "%s | YouTube Playlist Summarizer",
+        "description": "Shrňte celé YouTube playlisty okamžitě pomocí AI. Na rozdíl od jiných nástrojů zpracováváme kompletní playlisty a umožňujeme chatovat s obsahem. Ušetřete hodiny sledování.",
+        "ogTitle": "YouTube Playlist Summarizer - AI Shrnutí Kompletních Playlistů",
+        "ogDescription": "Jediný AI nástroj, který shrne celé YouTube playlisty, nejen jednotlivá videa. Získejte okamžité poznatky a chatujte s obsahem playlistu.",
+        "keywords": "shrnutí YouTube playlistu, AI video souhrn, sumarizace playlistu, přepis playlistu, YouTube AI, hromadný sumarizátor videí, analýza playlistu",
+        "author": "YouTube Playlist Summarizer",
+        "applicationName": "YouTube Playlist Summarizer"
     },
     "common": {
         "playlistSummary": "Shrnutí playlistu"
