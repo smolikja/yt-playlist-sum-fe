@@ -104,6 +104,6 @@ Messages are sent to `/chat` endpoint:
 interface ChatRequest {
   conversation_id: string;
   message: string;
-  use_transcripts?: boolean; // true for Deep Mode
+  use_rag?: boolean; // true for Deep Mode
 }
 ```
