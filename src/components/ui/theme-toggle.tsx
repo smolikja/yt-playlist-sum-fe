@@ -6,6 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { THEMES } from "@/lib/constants";
 
 export function ThemeToggle() {
     const { theme, setTheme, resolvedTheme } = useTheme();
@@ -26,12 +27,12 @@ export function ThemeToggle() {
     // Toggle between light and dark based on resolved theme
     // If current is "system", use resolvedTheme to determine what to switch to
     const toggleTheme = () => {
-        const currentTheme = theme === "system" ? resolvedTheme : theme;
-        setTheme(currentTheme === "dark" ? "light" : "dark");
+        const currentTheme = theme === THEMES.SYSTEM ? resolvedTheme : theme;
+        setTheme(currentTheme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK);
     };
 
     // Use resolvedTheme for display (handles "system" case)
-    const isDark = resolvedTheme === "dark";
+    const isDark = resolvedTheme === THEMES.DARK;
 
     return (
         <TooltipProvider>

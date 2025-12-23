@@ -21,7 +21,21 @@ export interface ChatResponse {
 
 export enum Role {
   USER = "user",
-  AI = "ai",
+  MODEL = "model",
+}
+
+/**
+ * Type guard for validating Role values from external sources (e.g., API responses).
+ */
+export function isRole(value: unknown): value is Role {
+  return value === Role.USER || value === Role.MODEL;
+}
+
+/**
+ * Safely parse a string to Role, returns undefined if invalid.
+ */
+export function parseRole(value: unknown): Role | undefined {
+  return isRole(value) ? value : undefined;
 }
 
 export interface MessageButton {

@@ -33,7 +33,7 @@ export function useChat({ conversationId, initialMessages = [] }: UseChatProps) 
         onSuccess: (data) => {
             setMessages((prev) => [
                 ...prev,
-                { role: Role.AI, content: data.response },
+                { role: Role.MODEL, content: data.response },
             ]);
             // Invalidate conversations list so it re-sorts by updated_at
             queryClient.invalidateQueries({ queryKey: queryKeys.conversations.all });
@@ -44,7 +44,7 @@ export function useChat({ conversationId, initialMessages = [] }: UseChatProps) 
             // For now, let's just append an error message system-side
             setMessages((prev) => [
                 ...prev,
-                { role: Role.AI, content: "Sorry, I encountered an error responding to your message." },
+                { role: Role.MODEL, content: "Sorry, I encountered an error responding to your message." },
             ]);
         },
     });

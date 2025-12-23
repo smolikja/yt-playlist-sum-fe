@@ -14,6 +14,7 @@ import {
     ProblemDetails,
     isProblemDetails,
 } from "./types";
+import { API_PAGINATION } from "./constants";
 
 const ANONYMOUS_ID_KEY = "x-user-id";
 const ACCESS_TOKEN_KEY = "access_token";
@@ -199,7 +200,10 @@ export async function sendMessage(conversationId: string, message: string, useTr
 /**
  * Retrieves the history of conversations for the authenticated user.
  */
-export async function getConversations(limit = 20, offset = 0): Promise<ConversationResponse[]> {
+export async function getConversations(
+    limit = API_PAGINATION.DEFAULT_LIMIT,
+    offset = API_PAGINATION.DEFAULT_OFFSET
+): Promise<ConversationResponse[]> {
     const params = new URLSearchParams({
         limit: limit.toString(),
         offset: offset.toString(),

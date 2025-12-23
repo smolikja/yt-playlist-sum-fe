@@ -5,7 +5,7 @@ import { useClaimConversation } from "@/hooks/use-claim";
 import { useConversation } from "@/hooks/use-conversation";
 import { toast } from "sonner";
 import { Message } from "@/hooks/use-chat";
-import { Role } from "@/lib/types";
+import { Role, isRole } from "@/lib/types";
 import { useTranslations } from "next-intl";
 
 export function useHomeView() {
@@ -67,10 +67,12 @@ export function useHomeView() {
     const displayPlaylistUrl = conversationData?.playlist_url || (isJustSummarized ? url : undefined);
 
     const initialMessages: Message[] =
-        conversationData?.messages.map((m) => ({
-            role: m.role as Role,
-            content: m.content,
-        })) || [];
+        conversationData?.messages
+            .filter((m) => isRole(m.role))
+            .map((m) => ({
+                role: m.role,
+                content: m.content,
+            })) || [];
 
     // Event handlers
     const handleNewChat = useCallback(() => {

@@ -1,4 +1,5 @@
 import React from "react";
+import { ICON_POSITION, IconPosition } from "@/lib/constants";
 
 export const MagicButton = ({
   title,
@@ -9,7 +10,7 @@ export const MagicButton = ({
 }: {
   title: string;
   icon?: React.ReactNode;
-  position?: string;
+  position?: IconPosition;
   handleClick?: () => void;
   otherClasses?: string;
 }) => {
@@ -22,10 +23,11 @@ export const MagicButton = ({
       <span
         className={`inline-flex h-full w-full cursor-pointer items-center justify-center rounded-lg bg-card dark:bg-slate-950 px-7 text-sm font-medium text-foreground dark:text-white backdrop-blur-3xl gap-2 ${otherClasses}`}
       >
-        {position === "left" && icon}
+        {position === ICON_POSITION.LEFT && icon}
         {title}
-        {position === "right" && icon}
+        {position === ICON_POSITION.RIGHT && icon}
       </span>
     </button>
   );
 };
+

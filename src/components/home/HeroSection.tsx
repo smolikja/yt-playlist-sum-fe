@@ -6,6 +6,7 @@ import { InputWithGlow } from "@/components/ui/input-with-glow";
 import { MagicButton } from "@/components/ui/magic-button";
 import { LoadingProgress } from "./LoadingProgress";
 import { useTranslations } from "next-intl";
+import { ICON_POSITION } from "@/lib/constants";
 
 interface HeroSectionProps {
     url: string;
@@ -63,7 +64,7 @@ export function HeroSection({
                         <MagicButton
                             title={t("button")}
                             icon={<Sparkles className="w-4 h-4" />}
-                            position="right"
+                            position={ICON_POSITION.RIGHT}
                             handleClick={onSubmit}
                         />
                     )}

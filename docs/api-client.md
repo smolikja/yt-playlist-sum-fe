@@ -152,3 +152,38 @@ export const queryKeys = {
   },
 };
 ```
+
+## Rate Limits
+
+The backend enforces rate limits on certain endpoints:
+
+| Endpoint | Limit |
+|----------|-------|
+| `POST /api/v1/summarize` | 10 requests/minute |
+| `POST /api/v1/chat` | 30 requests/minute |
+| Other endpoints | No limit |
+
+Rate limit constants are available in `src/lib/constants.ts`:
+
+```typescript
+import { API_RATE_LIMITS } from "@/lib/constants";
+
+API_RATE_LIMITS.SUMMARIZE  // 10
+API_RATE_LIMITS.CHAT       // 30
+```
+
+When rate limited, the API returns HTTP 429 with a user-friendly message.
+
+## Pagination
+
+The conversations endpoint supports pagination:
+
+```typescript
+import { API_PAGINATION } from "@/lib/constants";
+
+getConversations(
+  API_PAGINATION.DEFAULT_LIMIT,  // 20
+  API_PAGINATION.DEFAULT_OFFSET  // 0
+);
+```
+
