@@ -12,7 +12,7 @@ export interface SummaryResult {
 export interface ChatRequest {
   conversation_id: string;
   message: string;
-  use_transcripts?: boolean;
+  use_rag?: boolean;
 }
 
 export interface ChatResponse {

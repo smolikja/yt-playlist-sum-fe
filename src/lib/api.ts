@@ -191,13 +191,13 @@ export async function claimConversation(conversationId: string): Promise<void> {
 /**
  * Sends a chat message to the LLM within the context of a conversation.
  */
-export async function sendMessage(conversationId: string, message: string, useTranscripts: boolean): Promise<ChatResponse> {
+export async function sendMessage(conversationId: string, message: string, useRag: boolean): Promise<ChatResponse> {
     return fetchAPI<ChatResponse>("/api/v1/chat", {
         method: "POST",
         body: JSON.stringify({
             conversation_id: conversationId,
             message,
-            use_transcripts: useTranscripts,
+            use_rag: useRag,
         } as ChatRequest),
     });
 }

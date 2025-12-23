@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import { CHAT_CONFIG } from "@/lib/constants";
 
 interface ChatInputProps {
-    onSend: (message: string, useTranscripts: boolean) => void;
+    onSend: (message: string, useRag: boolean) => void;
     isLoading: boolean;
     onInteract?: () => void;
 }
@@ -34,7 +34,7 @@ export function ChatInput({ onSend, isLoading, onInteract }: ChatInputProps) {
 
     const handleSend = () => {
         if (!input.trim() || isLoading || !isValidLength) return;
-        // Inverse logic: Fast Mode (true) => use_transcripts (false)
+        // Inverse logic: Fast Mode (true) => use_rag (false)
         onSend(input, !isFastMode);
         setInput("");
     };

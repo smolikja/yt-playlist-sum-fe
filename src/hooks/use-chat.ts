@@ -26,9 +26,9 @@ export function useChat({ conversationId, initialMessages = [] }: UseChatProps) 
     }, [initialMessages]);
 
     const { mutate: sendMessageMutation, isPending: isLoading } = useMutation({
-        mutationFn: async ({ message, useTranscripts }: { message: string; useTranscripts: boolean }) => {
+        mutationFn: async ({ message, useRag }: { message: string; useRag: boolean }) => {
             // Optimistic update handled in the wrapper function
-            return sendMessage(conversationId, message, useTranscripts);
+            return sendMessage(conversationId, message, useRag);
         },
         onSuccess: (data) => {
             setMessages((prev) => [
@@ -49,14 +49,14 @@ export function useChat({ conversationId, initialMessages = [] }: UseChatProps) 
         },
     });
 
-    const submitMessage = (message: string, useTranscripts: boolean) => {
+    const submitMessage = (message: string, useRag: boolean) => {
         if (!message.trim()) return;
 
         // Optimistic update: Add user message immediately
         setMessages((prev) => [...prev, { role: Role.USER, content: message }]);
 
         // Trigger API call
-        sendMessageMutation({ message, useTranscripts });
+        sendMessageMutation({ message, useRag });
     };
 
     return {
@@ -65,3 +65,4 @@ export function useChat({ conversationId, initialMessages = [] }: UseChatProps) 
         submitMessage,
     };
 }
+
