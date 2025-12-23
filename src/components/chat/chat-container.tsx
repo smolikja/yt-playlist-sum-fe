@@ -14,24 +14,47 @@ export function ChatContainer({ conversationId, initialMessages, onInteract }: C
     const { messages, isLoading, submitMessage } = useChat({ conversationId, initialMessages });
     const chatInputRef = useRef<HTMLDivElement>(null);
     const hasScrolledRef = useRef(false);
+    const prevMessageCountRef = useRef(messages.length);
 
-    // Simple scroll logic: scroll to chat input once after mount if there are messages
+    // Scroll helper function
+    const scrollToChatInput = (behavior: ScrollBehavior = "smooth") => {
+        chatInputRef.current?.scrollIntoView({
+            behavior,
+            block: "end",
+        });
+    };
+
+    // Initial scroll: scroll to chat input once after mount if there are messages
     useEffect(() => {
-        // Only scroll once per mount, and only if there are initial messages
         if (hasScrolledRef.current) return;
         if (!initialMessages || initialMessages.length === 0) return;
 
         // Wait for animations to complete (0.5s duration + 0.2s delay = 0.7s)
         const timer = setTimeout(() => {
-            chatInputRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "end",
-            });
+            scrollToChatInput("smooth");
             hasScrolledRef.current = true;
         }, 750);
 
         return () => clearTimeout(timer);
     }, [initialMessages]);
+
+    // Scroll when new message arrives (user sends or AI responds)
+    useEffect(() => {
+        const messageCountChanged = messages.length !== prevMessageCountRef.current;
+
+        if (messageCountChanged && messages.length > 0) {
+            scrollToChatInput("smooth");
+        }
+
+        prevMessageCountRef.current = messages.length;
+    }, [messages.length]);
+
+    // Scroll when AI starts thinking (isLoading becomes true)
+    useEffect(() => {
+        if (isLoading) {
+            scrollToChatInput("smooth");
+        }
+    }, [isLoading]);
 
     return (
         <motion.div
@@ -53,4 +76,3 @@ export function ChatContainer({ conversationId, initialMessages, onInteract }: C
         </motion.div>
     );
 }
-
