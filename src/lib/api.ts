@@ -126,6 +126,11 @@ async function fetchAPI<T>(
         throw new ApiError(message, response.status, problemDetails);
     }
 
+    // Handle 204 No Content and empty responses
+    if (response.status === 204 || response.headers.get("content-length") === "0") {
+        return undefined as T;
+    }
+
     return response.json();
 }
 
