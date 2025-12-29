@@ -1,8 +1,8 @@
 "use client";
 
 import { Youtube } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 import { BorderBeam } from "@/components/ui/border-beam";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 
 interface SummaryCardProps {
     title: string;
@@ -36,9 +36,7 @@ export function SummaryCard({ title, date, summary, playlistUrl }: SummaryCardPr
                 </div>
             </div>
 
-            <div className="prose prose-lg dark:prose-invert prose-indigo max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-p:text-muted-foreground prose-li:text-muted-foreground">
-                <ReactMarkdown>{summary}</ReactMarkdown>
-            </div>
+            <MarkdownContent content={summary} variant="summary" />
         </div>
     );
 }

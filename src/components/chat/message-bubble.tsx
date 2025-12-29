@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import ReactMarkdown from "react-markdown";
 import { User, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Role } from "@/lib/types";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 
 interface MessageBubbleProps {
     role: Role;
@@ -36,13 +36,10 @@ export function MessageBubble({ role, content }: MessageBubbleProps) {
                     ? "bg-blue-600 text-white"
                     : "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700"
             )}>
-                {isUser ? (
-                    <p>{content}</p>
-                ) : (
-                    <div className="prose prose-sm dark:prose-invert max-w-none">
-                        <ReactMarkdown>{content}</ReactMarkdown>
-                    </div>
-                )}
+                <MarkdownContent
+                    content={content}
+                    variant={isUser ? "user" : "chat"}
+                />
             </div>
         </motion.div>
     );
