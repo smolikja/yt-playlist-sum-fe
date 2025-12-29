@@ -21,12 +21,17 @@ const variantStyles: Record<MarkdownVariant, string> = {
     ),
     chat: cn(
         "prose prose-base dark:prose-invert prose-indigo max-w-none",
-        "prose-headings:font-bold prose-headings:text-white",
+        // Headings: black in light, white in dark
+        "prose-headings:font-bold prose-headings:text-zinc-900 dark:prose-headings:text-white",
         "prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg",
-        "prose-p:text-zinc-300 prose-p:my-1.5",
-        "prose-li:text-zinc-300 prose-li:my-0.5",
-        "prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline",
-        "prose-strong:text-white prose-code:text-indigo-400",
+        // Body text: muted in both modes for contrast hierarchy
+        "prose-p:text-zinc-600 dark:prose-p:text-zinc-300 prose-p:my-1.5",
+        "prose-li:text-zinc-600 dark:prose-li:text-zinc-300 prose-li:my-0.5",
+        // Links: indigo in both modes
+        "prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline",
+        // Strong: high contrast in both modes
+        "prose-strong:text-zinc-900 dark:prose-strong:text-white",
+        "prose-code:text-indigo-600 dark:prose-code:text-indigo-400",
         "prose-ul:my-2 prose-ol:my-2"
     ),
     user: cn(
