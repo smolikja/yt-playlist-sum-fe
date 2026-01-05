@@ -10,8 +10,11 @@ import { useMemo } from "react";
 /**
  * Hook for managing user's background summarization jobs.
  * Provides queries for fetching jobs and mutations for claim/retry/delete.
+ * 
+ * @param enabled - Whether to fetch jobs at all (should be true if user is authenticated)
+ * @param enablePolling - Whether to auto-poll for job updates (should be true when jobs are visible)
  */
-export function useJobs(enabled = true) {
+export function useJobs(enabled = true, enablePolling = true) {
     const queryClient = useQueryClient();
 
     // Query for fetching all user jobs
@@ -29,8 +32,10 @@ export function useJobs(enabled = true) {
         staleTime: 0, // Always fetch fresh data
         refetchOnMount: true, // Refetch when component mounts
         refetchOnWindowFocus: true, // Refetch when window regains focus
-        // Auto-poll when there are active (pending/running) jobs
+        // Auto-poll when there are active (pending/running) jobs AND polling is enabled
         refetchInterval: (query) => {
+            if (!enablePolling) return false; // Don't poll when jobs view is not visible
+
             const data = query.state.data as JobResponse[] | undefined;
             const hasActiveJobs = data?.some(
                 (job) => job.status === "pending" || job.status === "running"

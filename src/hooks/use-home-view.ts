@@ -54,7 +54,11 @@ export function useHomeView() {
         activeConversationId || ""
     );
 
+    // Computed values - need to compute early to pass to useJobs
+    const isDetailView = !!activeConversationId;
+
     // Jobs hook - only enabled for authenticated users
+    // Polling only runs when jobs view is visible (not in detail view)
     const {
         jobs,
         activeJobs,
@@ -69,7 +73,7 @@ export function useHomeView() {
         isDeleting,
         addJob,
         updateJob,
-    } = useJobs(isAuthenticated);
+    } = useJobs(isAuthenticated, !isDetailView);
 
     // Poll the newly created job
     useJobPolling(pollingJobId, {
@@ -87,7 +91,6 @@ export function useHomeView() {
     });
 
     // Computed values
-    const isDetailView = !!activeConversationId;
     const isJustSummarized = summaryData?.mode === 'sync' && summaryData.summary?.conversation_id === activeConversationId;
 
     const displayTitle =
