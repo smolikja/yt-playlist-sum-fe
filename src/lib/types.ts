@@ -143,3 +143,55 @@ export function isProblemDetails(data: unknown): data is ProblemDetails {
     "status" in data
   );
 }
+
+// ============================================================
+// JOB TYPES
+// ============================================================
+
+/** Status of a background summarization job */
+export type JobStatus = 'pending' | 'running' | 'completed' | 'failed';
+
+/** Background job response from the API */
+export interface JobResponse {
+  id: string;
+  status: JobStatus;
+  playlist_url: string;
+  error_message: string | null;
+  created_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+}
+
+/**
+ * Discriminated union for /summarize endpoint response.
+ * - mode: 'sync' → immediate result for public users
+ * - mode: 'async' → job created for authenticated users
+ */
+export type SummarizeResponse =
+  | { mode: 'sync'; summary: SummaryResult; job?: undefined }
+  | { mode: 'async'; job: JobResponse; summary?: undefined };
+
+/** Response from POST /jobs/{id}/claim */
+export interface JobClaimResponse {
+  conversation: ConversationDetailResponse;
+}
+
+// ============================================================
+// CUSTOM ERROR CLASSES
+// ============================================================
+
+/** Error thrown when public user's summarization times out (408) */
+export class PublicTimeoutError extends ApiError {
+  constructor(message: string, problemDetails?: ProblemDetails) {
+    super(message, 408, problemDetails);
+    this.name = 'PublicTimeoutError';
+  }
+}
+
+/** Error thrown when user reaches concurrent job limit (429) */
+export class JobLimitError extends ApiError {
+  constructor(message: string, problemDetails?: ProblemDetails) {
+    super(message, 429, problemDetails);
+    this.name = 'JobLimitError';
+  }
+}

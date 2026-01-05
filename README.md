@@ -10,6 +10,7 @@ A modern web application that transforms hours of YouTube playlist content into 
 ## ✨ Features
 
 - **AI-Powered Summaries** - Generate comprehensive summaries of entire YouTube playlists
+- **Background Job Processing** - Async summarization with real-time progress tracking
 - **Interactive Chat** - Ask follow-up questions about the content
 - **Fast & Deep Modes** - Choose between quick answers or detailed transcript-based responses
 - **Light & Dark Themes** - Modern, futuristic UI with theme switching
@@ -64,6 +65,7 @@ Detailed documentation for each feature is available in the [`docs/`](./docs/) d
 | [Authentication](./docs/authentication.md) | User authentication and authorization |
 | [Chat System](./docs/chat-system.md) | AI chat interface and message handling |
 | [Summarization](./docs/summarization.md) | Playlist summarization feature |
+| [Background Jobs](./docs/background-jobs.md) | Async job processing system |
 | [Theming](./docs/theming.md) | Light/dark theme implementation |
 | [Internationalization](./docs/internationalization.md) | Multi-language support (i18n) |
 | [UI Components](./docs/ui-components.md) | Reusable component library |
@@ -98,6 +100,7 @@ src/
 │   ├── auth/               # Authentication components
 │   ├── chat/               # Chat interface
 │   ├── home/               # Home page components
+│   ├── jobs/               # Background job components
 │   └── ui/                 # Reusable UI components
 ├── hooks/                  # Custom React hooks
 ├── lib/                    # Utilities, API, types

@@ -3,16 +3,20 @@ import { useSummarize } from "@/hooks/use-summarize";
 import { useAuth } from "@/hooks/use-auth";
 import { useClaimConversation } from "@/hooks/use-claim";
 import { useConversation } from "@/hooks/use-conversation";
+import { useJobs } from "@/hooks/use-jobs";
+import { useJobPolling } from "@/hooks/use-job-polling";
 import { toast } from "sonner";
 import { Message } from "@/hooks/use-chat";
-import { Role, isRole } from "@/lib/types";
+import { Role, isRole, PublicTimeoutError, JobLimitError, JobResponse } from "@/lib/types";
 import { useTranslations } from "next-intl";
+import { JOB_CONFIG } from "@/lib/constants";
 
 export function useHomeView() {
     const t = useTranslations("toast");
     const tLoading = useTranslations("loading");
     const tCommon = useTranslations("common");
     const tTime = useTranslations("time");
+    const tJobs = useTranslations("jobs");
 
     // Translated loading steps
     const loadingSteps = useMemo(
@@ -34,9 +38,13 @@ export function useHomeView() {
 
     // Auth modal state
     const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+    const [authModalContextMessage, setAuthModalContextMessage] = useState<string | null>(null);
 
     // Loading progress state
     const [loadingStep, setLoadingStep] = useState(0);
+
+    // Current polling job ID (for newly created job)
+    const [pollingJobId, setPollingJobId] = useState<string | null>(null);
 
     // Hooks
     const { mutate: summarize, isPending: isSummarizing, data: summaryData } = useSummarize();
@@ -46,18 +54,53 @@ export function useHomeView() {
         activeConversationId || ""
     );
 
-    // Computed values
+    // Computed values - need to compute early to pass to useJobs
     const isDetailView = !!activeConversationId;
-    const isJustSummarized = summaryData?.conversation_id === activeConversationId;
+
+    // Jobs hook - only enabled for authenticated users
+    // Polling only runs when jobs view is visible (not in detail view)
+    const {
+        jobs,
+        activeJobs,
+        completedJobs,
+        failedJobs,
+        isLoading: isLoadingJobs,
+        claimJob,
+        isClaiming: isClaimingJob,
+        retryJob,
+        isRetrying,
+        deleteJob,
+        isDeleting,
+        addJob,
+        updateJob,
+    } = useJobs(isAuthenticated, !isDetailView);
+
+    // Poll the newly created job
+    useJobPolling(pollingJobId, {
+        onComplete: (job) => {
+            setPollingJobId(null);
+            toast.success(tJobs("status.completed"));
+        },
+        onFailed: (job) => {
+            setPollingJobId(null);
+            toast.error(job.error_message || tJobs("status.failed"));
+        },
+        onStatusChange: (job) => {
+            updateJob(job);
+        },
+    });
+
+    // Computed values
+    const isJustSummarized = summaryData?.mode === 'sync' && summaryData.summary?.conversation_id === activeConversationId;
 
     const displayTitle =
         conversationData?.title ||
-        (isJustSummarized ? summaryData?.playlist_title : null) ||
+        (isJustSummarized && summaryData?.mode === 'sync' ? summaryData.summary?.playlist_title : null) ||
         tCommon("playlistSummary");
 
     const displaySummary =
         conversationData?.summary ||
-        (isJustSummarized ? summaryData?.summary_markdown : null);
+        (isJustSummarized && summaryData?.mode === 'sync' ? summaryData.summary?.summary_markdown : null);
 
     const displayDate = conversationData?.created_at
         ? new Date(conversationData.created_at).toLocaleDateString()
@@ -78,6 +121,7 @@ export function useHomeView() {
     const handleNewChat = useCallback(() => {
         setActiveConversationId(null);
         setUrl("");
+        setPollingJobId(null);
     }, []);
 
     const handleLogout = useCallback(() => {
@@ -103,15 +147,35 @@ export function useHomeView() {
         summarize(url, {
             onSuccess: (result) => {
                 clearInterval(interval);
-                toast.success(t("success.summaryGenerated"));
-                setActiveConversationId(result.conversation_id);
+
+                if (result.mode === 'sync') {
+                    // Unauthenticated user - immediate result
+                    toast.success(t("success.summaryGenerated"));
+                    setActiveConversationId(result.summary.conversation_id);
+                } else {
+                    // Authenticated user - job created
+                    toast.success(tJobs("status.pending"));
+                    addJob(result.job);
+                    setPollingJobId(result.job.id);
+                    setUrl(""); // Clear input after job is created
+                }
             },
             onError: (err) => {
                 clearInterval(interval);
-                toast.error(err.message || t("error.failedToGenerate"));
+
+                if (err instanceof PublicTimeoutError) {
+                    // Show auth modal with timeout context
+                    setAuthModalContextMessage(tJobs("errors.timeout"));
+                    setAuthModalOpen(true);
+                } else if (err instanceof JobLimitError) {
+                    // Show job limit error
+                    toast.error(tJobs("errors.limit", { count: JOB_CONFIG.MAX_CONCURRENT_JOBS }));
+                } else {
+                    toast.error(err.message || t("error.failedToGenerate"));
+                }
             },
         });
-    }, [url, summarize, loadingSteps.length, t]);
+    }, [url, summarize, loadingSteps.length, t, tJobs, addJob]);
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -123,6 +187,7 @@ export function useHomeView() {
     );
 
     const handleAuthSuccess = useCallback(() => {
+        setAuthModalContextMessage(null);
         if (activeConversationId) {
             claimConversation(activeConversationId, {
                 onSuccess: () => {
@@ -134,6 +199,11 @@ export function useHomeView() {
             });
         }
     }, [activeConversationId, claimConversation, t]);
+
+    const handleCloseAuthModal = useCallback(() => {
+        setAuthModalOpen(false);
+        setAuthModalContextMessage(null);
+    }, []);
 
     const handleDeleteConversation = useCallback(
         (id: string) => {
@@ -148,6 +218,44 @@ export function useHomeView() {
         setActiveConversationId(id);
     }, []);
 
+    // Handler for when unauthenticated user tries to use chat
+    const handleChatAuthRequired = useCallback(() => {
+        setAuthModalContextMessage(tJobs("errors.chatAuth"));
+        setAuthModalOpen(true);
+    }, [tJobs]);
+
+    // Job action handlers
+    const handleClaimJob = useCallback(async (jobId: string) => {
+        try {
+            const result = await claimJob(jobId);
+            toast.success(t("success.conversationClaimed"));
+            setActiveConversationId(result.conversation.id);
+        } catch (error) {
+            toast.error(t("error.failedToClaim"));
+        }
+    }, [claimJob, t]);
+
+    const handleRetryJob = useCallback(async (jobId: string) => {
+        try {
+            const job = await retryJob(jobId);
+            setPollingJobId(job.id);
+            toast.success(tJobs("status.pending"));
+        } catch (error) {
+            toast.error(t("error.failedToGenerate"));
+        }
+    }, [retryJob, tJobs, t]);
+
+    const handleDeleteJob = useCallback(async (jobId: string) => {
+        try {
+            await deleteJob(jobId);
+            if (pollingJobId === jobId) {
+                setPollingJobId(null);
+            }
+        } catch (error) {
+            toast.error(t("error.failedToDelete"));
+        }
+    }, [deleteJob, pollingJobId, t]);
+
     return {
         // State
         url,
@@ -156,6 +264,7 @@ export function useHomeView() {
         loadingSteps,
         isMobileMenuOpen,
         isAuthModalOpen,
+        authModalContextMessage,
         isSummarizing,
         isClaiming,
         isLoadingConversation,
@@ -173,10 +282,22 @@ export function useHomeView() {
         displayPlaylistUrl,
         initialMessages,
 
+        // Jobs data
+        jobs,
+        activeJobs,
+        completedJobs,
+        failedJobs,
+        isLoadingJobs,
+        isClaimingJob,
+        isRetrying,
+        isDeleting,
+        pollingJobId,
+
         // Actions
         setUrl,
         setMobileMenuOpen: setIsMobileMenuOpen,
         setAuthModalOpen,
+        handleCloseAuthModal,
         handleSubmit,
         handleKeyDown,
         handleNewChat,
@@ -184,5 +305,11 @@ export function useHomeView() {
         handleSelectConversation,
         handleAuthSuccess,
         handleDeleteConversation,
+        handleChatAuthRequired,
+
+        // Job actions
+        handleClaimJob,
+        handleRetryJob,
+        handleDeleteJob,
     };
 }

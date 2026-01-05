@@ -7,7 +7,6 @@ import { Sidebar, MobileSidebar } from "@/components/chat/sidebar";
 import { AuthModal } from "@/components/auth/auth-modal";
 import { Spotlight } from "@/components/ui/spotlight";
 import { motion, AnimatePresence } from "framer-motion";
-import { setRequestLocale } from "next-intl/server";
 import { use } from "react";
 
 type Props = {
@@ -26,6 +25,7 @@ export default function Home({ params }: Props) {
         loadingSteps,
         isMobileMenuOpen,
         isAuthModalOpen,
+        authModalContextMessage,
         isSummarizing,
         isClaiming,
         isLoadingConversation,
@@ -40,10 +40,17 @@ export default function Home({ params }: Props) {
         displayDate,
         displayPlaylistUrl,
         initialMessages,
+        // Jobs data
+        jobs,
+        isClaimingJob,
+        isRetrying,
+        isDeleting,
+        pollingJobId,
         // Actions
         setUrl,
         setMobileMenuOpen,
         setAuthModalOpen,
+        handleCloseAuthModal,
         handleSubmit,
         handleKeyDown,
         handleNewChat,
@@ -51,6 +58,11 @@ export default function Home({ params }: Props) {
         handleSelectConversation,
         handleAuthSuccess,
         handleDeleteConversation,
+        handleChatAuthRequired,
+        // Job actions
+        handleClaimJob,
+        handleRetryJob,
+        handleDeleteJob,
     } = useHomeView();
 
     return (
@@ -113,6 +125,15 @@ export default function Home({ params }: Props) {
                                 isPending={isSummarizing}
                                 loadingStep={loadingStep}
                                 loadingSteps={loadingSteps}
+                                // Job props for authenticated users
+                                jobs={isAuthenticated ? jobs : undefined}
+                                onClaimJob={isAuthenticated ? handleClaimJob : undefined}
+                                onRetryJob={isAuthenticated ? handleRetryJob : undefined}
+                                onDeleteJob={isAuthenticated ? handleDeleteJob : undefined}
+                                isClaimingJob={isClaimingJob}
+                                isRetryingJob={isRetrying}
+                                isDeletingJob={isDeleting}
+                                pollingJobId={pollingJobId}
                             />
                         )}
 
@@ -128,7 +149,7 @@ export default function Home({ params }: Props) {
                                 initialMessages={initialMessages}
                                 isAuthenticated={isAuthenticated}
                                 isClaiming={isClaiming}
-                                onAuthRequired={() => setAuthModalOpen(true)}
+                                onAuthRequired={handleChatAuthRequired}
                             />
                         )}
                     </AnimatePresence>
@@ -137,8 +158,9 @@ export default function Home({ params }: Props) {
                 {/* Auth Modal */}
                 <AuthModal
                     isOpen={isAuthModalOpen}
-                    onClose={() => setAuthModalOpen(false)}
+                    onClose={handleCloseAuthModal}
                     onSuccess={handleAuthSuccess}
+                    contextMessage={authModalContextMessage}
                 />
             </main>
         </div>

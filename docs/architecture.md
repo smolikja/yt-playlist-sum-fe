@@ -28,6 +28,7 @@ src/
 │   ├── auth/               # Authentication components
 │   ├── chat/               # Chat interface components
 │   ├── home/               # Home page components
+│   ├── jobs/               # Background job components
 │   └── ui/                 # Reusable UI components
 ├── hooks/                  # Custom React hooks
 ├── lib/                    # Utilities, API client, types

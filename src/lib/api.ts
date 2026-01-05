@@ -13,6 +13,12 @@ import {
     ApiError,
     ProblemDetails,
     isProblemDetails,
+    // Job types
+    SummarizeResponse,
+    JobResponse,
+    JobClaimResponse,
+    PublicTimeoutError,
+    JobLimitError,
 } from "./types";
 import { API_PAGINATION } from "./constants";
 
@@ -171,12 +177,44 @@ export async function getCurrentUser(): Promise<UserRead> {
 
 /**
  * Summarizes a YouTube playlist given its URL.
+ * Returns dual-mode response based on authentication status:
+ * - Authenticated: async mode with job
+ * - Unauthenticated: sync mode with immediate result
+ * 
+ * @throws {PublicTimeoutError} When unauthenticated user's request times out (408)
+ * @throws {JobLimitError} When user has reached max concurrent jobs (429)
  */
-export async function summarizePlaylist(url: string): Promise<SummaryResult> {
-    return fetchAPI<SummaryResult>("/api/v1/summarize", {
+export async function summarizePlaylist(url: string): Promise<SummarizeResponse> {
+    const token = getAccessToken();
+
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+    };
+
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/summarize`, {
         method: "POST",
+        headers,
         body: JSON.stringify({ url } as PlaylistRequest),
     });
+
+    if (!response.ok) {
+        const { message, problemDetails } = await parseErrorResponse(response);
+
+        // Handle specific error codes
+        if (response.status === 408) {
+            throw new PublicTimeoutError(message, problemDetails);
+        }
+        if (response.status === 429) {
+            throw new JobLimitError(message, problemDetails);
+        }
+        throw new ApiError(message, response.status, problemDetails);
+    }
+
+    return response.json();
 }
 
 /**
@@ -231,3 +269,53 @@ export async function deleteConversation(conversationId: string): Promise<void> 
         method: "DELETE",
     });
 }
+
+// ============================================================
+// JOB API ENDPOINTS
+// ============================================================
+
+/**
+ * Retrieves all jobs for the authenticated user.
+ */
+export async function getJobs(): Promise<JobResponse[]> {
+    return fetchAPI<JobResponse[]>("/api/v1/jobs");
+}
+
+/**
+ * Retrieves a specific job by ID.
+ * Used for polling job status.
+ */
+export async function getJob(jobId: string): Promise<JobResponse> {
+    return fetchAPI<JobResponse>(`/api/v1/jobs/${jobId}`);
+}
+
+/**
+ * Claims a completed job and returns the created conversation.
+ * The job is automatically deleted after claiming.
+ */
+export async function claimJob(jobId: string): Promise<JobClaimResponse> {
+    return fetchAPI<JobClaimResponse>(`/api/v1/jobs/${jobId}/claim`, {
+        method: "POST",
+    });
+}
+
+/**
+ * Retries a failed job.
+ * Resets the job status to 'pending'.
+ */
+export async function retryJob(jobId: string): Promise<JobResponse> {
+    return fetchAPI<JobResponse>(`/api/v1/jobs/${jobId}/retry`, {
+        method: "POST",
+    });
+}
+
+/**
+ * Deletes/cancels a job.
+ * Can be used for pending or failed jobs.
+ */
+export async function deleteJob(jobId: string): Promise<void> {
+    return fetchAPI<void>(`/api/v1/jobs/${jobId}`, {
+        method: "DELETE",
+    });
+}
+

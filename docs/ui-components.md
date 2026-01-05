@@ -106,6 +106,33 @@ Radix UI tooltip with custom styling.
 </TooltipProvider>
 ```
 
+## Job Components (`src/components/jobs/`)
+
+Components for background job management.
+
+### JobStatusIndicator
+
+Animated status icon using Framer Motion.
+
+| Status | Icon | Color | Animation |
+|--------|------|-------|-----------|
+| `pending` | Clock | Amber | Pulsing |
+| `running` | Loader | Indigo | Spinning |
+| `completed` | CheckCircle | Emerald | Spring pop |
+| `failed` | XCircle | Red | Spring pop |
+
+```tsx
+<JobStatusIndicator status="running" size="md" />
+```
+
+### JobCard
+
+Full-detail job card with status, URL, time, and action buttons.
+
+### JobsBanner
+
+Collapsible floating banner containing JobCards. Shows status badges with counts.
+
 ## Animation Patterns
 
 ### Entry Animations

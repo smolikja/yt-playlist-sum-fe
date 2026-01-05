@@ -85,3 +85,21 @@ export const CHAT_CONFIG = {
     /** Minimum length of a chat message */
     MIN_MESSAGE_LENGTH: 1,
 } as const;
+
+// =============================================================================
+// Job Configuration
+// =============================================================================
+
+/**
+ * Configuration for background job processing.
+ * These match backend settings for job management.
+ */
+export const JOB_CONFIG = {
+    /** Polling interval in milliseconds (5 seconds) */
+    POLL_INTERVAL_MS: 5000,
+    /** Maximum concurrent jobs per user */
+    MAX_CONCURRENT_JOBS: 3,
+    /** Days until unclaimed jobs expire */
+    EXPIRY_DAYS: 3,
+} as const;
+

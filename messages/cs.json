@@ -108,5 +108,32 @@
         "dark": "Tmavý režim",
         "light": "Světlý režim",
         "system": "Systémový"
+    },
+    "jobs": {
+        "banner": {
+            "title": "Aktivní úlohy",
+            "empty": "Žádné aktivní úlohy",
+            "showAll": "Zobrazit vše",
+            "hide": "Skrýt"
+        },
+        "status": {
+            "pending": "Čeká ve frontě...",
+            "running": "Sumarizuji...",
+            "completed": "Hotovo!",
+            "failed": "Chyba"
+        },
+        "actions": {
+            "view": "Zobrazit výsledek",
+            "retry": "Zkusit znovu",
+            "cancel": "Zrušit"
+        },
+        "errors": {
+            "limit": "Dosáhli jste limitu {count} souběžných úloh. Počkejte na dokončení jedné z nich.",
+            "timeout": "Tento playlist je příliš komplexní pro anonymní přístup. Přihlaste se nebo se zaregistrujte pro neomezené zpracování.",
+            "chatAuth": "Přihlaste se nebo se zaregistrujte pro kladení doplňujících otázek k vašim playlistům a odemkněte plný potenciál AI chatu."
+        },
+        "time": {
+            "created": "Vytvořeno {time}"
+        }
     }
 }

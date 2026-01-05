@@ -108,5 +108,32 @@
         "dark": "Dark mode",
         "light": "Light mode",
         "system": "System"
+    },
+    "jobs": {
+        "banner": {
+            "title": "Active Tasks",
+            "empty": "No active tasks",
+            "showAll": "Show all",
+            "hide": "Hide"
+        },
+        "status": {
+            "pending": "Waiting in queue...",
+            "running": "Summarizing...",
+            "completed": "Ready!",
+            "failed": "Failed"
+        },
+        "actions": {
+            "view": "View Result",
+            "retry": "Retry",
+            "cancel": "Cancel"
+        },
+        "errors": {
+            "limit": "You have reached the limit of {count} concurrent tasks. Wait for one to complete.",
+            "timeout": "This playlist is too complex for anonymous access. Sign in or register for unlimited processing.",
+            "chatAuth": "Sign in or register to ask follow-up questions about your playlists and unlock the full power of AI chat."
+        },
+        "time": {
+            "created": "Created {time}"
+        }
     }
 }
