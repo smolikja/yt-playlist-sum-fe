@@ -58,6 +58,20 @@ export function HeroSection({
             transition={{ duration: 0.35, ease: "easeInOut" }}
             className="flex flex-col items-center w-full flex-1 justify-center"
         >
+            {/* Jobs Banner - shown above title when user has jobs */}
+            {jobs.length > 0 && onClaimJob && onRetryJob && onDeleteJob && (
+                <JobsBanner
+                    jobs={jobs}
+                    onClaim={onClaimJob}
+                    onRetry={onRetryJob}
+                    onDelete={onDeleteJob}
+                    isClaiming={isClaimingJob}
+                    isRetrying={isRetryingJob}
+                    isDeleting={isDeletingJob}
+                    pollingJobId={pollingJobId}
+                />
+            )}
+
             <motion.div layout className="text-center mb-12">
                 <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-slate-800 to-slate-500 dark:from-neutral-50 dark:to-neutral-400 bg-opacity-50 pb-4">
                     {t("title")}
@@ -68,20 +82,6 @@ export function HeroSection({
             </motion.div>
 
             <motion.div layout className="relative z-10 max-w-xl mx-auto w-full">
-                {/* Jobs Banner - shown only when user has jobs */}
-                {jobs.length > 0 && onClaimJob && onRetryJob && onDeleteJob && (
-                    <JobsBanner
-                        jobs={jobs}
-                        onClaim={onClaimJob}
-                        onRetry={onRetryJob}
-                        onDelete={onDeleteJob}
-                        isClaiming={isClaimingJob}
-                        isRetrying={isRetryingJob}
-                        isDeleting={isDeletingJob}
-                        pollingJobId={pollingJobId}
-                    />
-                )}
-
                 <InputWithGlow
                     placeholder={t("placeholder")}
                     value={url}
@@ -106,4 +106,3 @@ export function HeroSection({
         </motion.div>
     );
 }
-

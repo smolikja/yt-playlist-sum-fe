@@ -5,7 +5,7 @@ import { ExternalLink, RotateCcw, X, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { JobStatusIndicator } from "./JobStatusIndicator";
 import { JobResponse } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, formatRelativeTime } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
 interface JobCardProps {
@@ -17,24 +17,6 @@ interface JobCardProps {
     isRetrying?: boolean;
     isDeleting?: boolean;
     isPolling?: boolean;
-}
-
-/**
- * Helper to format relative time
- */
-function formatRelativeTime(dateString: string): { key: string; values?: Record<string, number> } {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMinutes < 1) return { key: "justNow" };
-    if (diffMinutes < 60) return { key: "minutesAgo", values: { count: diffMinutes } };
-    if (diffHours < 24) return { key: "hoursAgo", values: { count: diffHours } };
-    if (diffDays === 1) return { key: "yesterday" };
-    return { key: "daysAgo", values: { count: diffDays } };
 }
 
 /**
@@ -67,7 +49,6 @@ export function JobCard({
     isPolling,
 }: JobCardProps) {
     const t = useTranslations("jobs");
-    const tTime = useTranslations("time");
 
     const isLoading = isClaiming || isRetrying || isDeleting;
     const isPendingOrRunning = job.status === "pending" || job.status === "running";
@@ -113,13 +94,9 @@ export function JobCard({
                         <ExternalLink className="w-3 h-3 flex-shrink-0" />
                     </a>
 
-                    {/* Creation Time */}
+                    {/* Creation Time - using shared formatRelativeTime from utils */}
                     <p className="text-xs text-muted-foreground/70 mt-1">
-                        {(() => {
-                            const { key, values } = formatRelativeTime(job.created_at);
-                            const timeStr = values ? tTime(key, values) : tTime(key);
-                            return t("time.created", { time: timeStr });
-                        })()}
+                        {t("time.created", { time: formatRelativeTime(job.created_at) })}
                     </p>
 
                     {/* Error Message (if failed) */}
