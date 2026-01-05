@@ -218,6 +218,12 @@ export function useHomeView() {
         setActiveConversationId(id);
     }, []);
 
+    // Handler for when unauthenticated user tries to use chat
+    const handleChatAuthRequired = useCallback(() => {
+        setAuthModalContextMessage(tJobs("errors.chatAuth"));
+        setAuthModalOpen(true);
+    }, [tJobs]);
+
     // Job action handlers
     const handleClaimJob = useCallback(async (jobId: string) => {
         try {
@@ -299,6 +305,7 @@ export function useHomeView() {
         handleSelectConversation,
         handleAuthSuccess,
         handleDeleteConversation,
+        handleChatAuthRequired,
 
         // Job actions
         handleClaimJob,

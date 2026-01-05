@@ -129,7 +129,8 @@
         },
         "errors": {
             "limit": "Dosáhli jste limitu {count} souběžných úloh. Počkejte na dokončení jedné z nich.",
-            "timeout": "Tento playlist je příliš komplexní pro anonymní přístup. Přihlaste se nebo se zaregistrujte pro neomezené zpracování."
+            "timeout": "Tento playlist je příliš komplexní pro anonymní přístup. Přihlaste se nebo se zaregistrujte pro neomezené zpracování.",
+            "chatAuth": "Přihlaste se nebo se zaregistrujte pro kladení doplňujících otázek k vašim playlistům a odemkněte plný potenciál AI chatu."
         },
         "time": {
             "created": "Vytvořeno {time}"

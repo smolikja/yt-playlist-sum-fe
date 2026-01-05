@@ -58,6 +58,7 @@ export default function Home({ params }: Props) {
         handleSelectConversation,
         handleAuthSuccess,
         handleDeleteConversation,
+        handleChatAuthRequired,
         // Job actions
         handleClaimJob,
         handleRetryJob,
@@ -148,7 +149,7 @@ export default function Home({ params }: Props) {
                                 initialMessages={initialMessages}
                                 isAuthenticated={isAuthenticated}
                                 isClaiming={isClaiming}
-                                onAuthRequired={() => setAuthModalOpen(true)}
+                                onAuthRequired={handleChatAuthRequired}
                             />
                         )}
                     </AnimatePresence>
