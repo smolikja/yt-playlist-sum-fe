@@ -15,9 +15,11 @@ interface AuthModalProps {
   onClose: () => void;
   onSuccess?: () => void;
   initialView?: "login" | "register";
+  /** Optional context message to display above the form (e.g., timeout explanation) */
+  contextMessage?: string | null;
 }
 
-export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }: AuthModalProps) {
+export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login", contextMessage }: AuthModalProps) {
   const [view, setView] = useState<"login" | "register">(initialView);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -148,6 +150,17 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialView = "login" }:
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              {/* Context Message (e.g., timeout warning) */}
+              {contextMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm"
+                >
+                  {contextMessage}
+                </motion.div>
+              )}
+
               <div className="space-y-2">
                 <label className="text-sm font-medium text-muted-foreground ml-1">{t("email")}</label>
                 <div className="relative">

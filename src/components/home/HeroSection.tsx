@@ -5,8 +5,10 @@ import { Sparkles } from "lucide-react";
 import { InputWithGlow } from "@/components/ui/input-with-glow";
 import { MagicButton } from "@/components/ui/magic-button";
 import { LoadingProgress } from "./LoadingProgress";
+import { JobsBanner } from "@/components/jobs";
 import { useTranslations } from "next-intl";
 import { ICON_POSITION } from "@/lib/constants";
+import { JobResponse } from "@/lib/types";
 
 interface HeroSectionProps {
     url: string;
@@ -16,6 +18,15 @@ interface HeroSectionProps {
     isPending: boolean;
     loadingStep: number;
     loadingSteps: string[];
+    // Jobs props (optional - only present for authenticated users)
+    jobs?: JobResponse[];
+    onClaimJob?: (jobId: string) => void;
+    onRetryJob?: (jobId: string) => void;
+    onDeleteJob?: (jobId: string) => void;
+    isClaimingJob?: boolean;
+    isRetryingJob?: boolean;
+    isDeletingJob?: boolean;
+    pollingJobId?: string | null;
 }
 
 export function HeroSection({
@@ -26,6 +37,14 @@ export function HeroSection({
     isPending,
     loadingStep,
     loadingSteps,
+    jobs = [],
+    onClaimJob,
+    onRetryJob,
+    onDeleteJob,
+    isClaimingJob,
+    isRetryingJob,
+    isDeletingJob,
+    pollingJobId,
 }: HeroSectionProps) {
     const t = useTranslations("hero");
 
@@ -49,6 +68,20 @@ export function HeroSection({
             </motion.div>
 
             <motion.div layout className="relative z-10 max-w-xl mx-auto w-full">
+                {/* Jobs Banner - shown only when user has jobs */}
+                {jobs.length > 0 && onClaimJob && onRetryJob && onDeleteJob && (
+                    <JobsBanner
+                        jobs={jobs}
+                        onClaim={onClaimJob}
+                        onRetry={onRetryJob}
+                        onDelete={onDeleteJob}
+                        isClaiming={isClaimingJob}
+                        isRetrying={isRetryingJob}
+                        isDeleting={isDeletingJob}
+                        pollingJobId={pollingJobId}
+                    />
+                )}
+
                 <InputWithGlow
                     placeholder={t("placeholder")}
                     value={url}
@@ -73,3 +106,4 @@ export function HeroSection({
         </motion.div>
     );
 }
+

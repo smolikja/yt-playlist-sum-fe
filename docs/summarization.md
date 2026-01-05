@@ -4,9 +4,16 @@ This document describes the playlist summarization feature.
 
 ## Overview
 
-Users can paste a YouTube playlist URL to generate an AI-powered summary of all videos in the playlist. The summary is displayed in a card format with the ability to ask follow-up questions.
+Users can paste a YouTube playlist URL to generate an AI-powered summary of all videos. The system uses **dual-mode** operation:
+
+| User Type | Mode | Behavior |
+|-----------|------|----------|
+| Unauthenticated | Sync | Immediate response (max 100s) |
+| Authenticated | Async | Background job with polling |
 
 ## User Flow
+
+### Unauthenticated Users (Sync)
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -14,6 +21,19 @@ Users can paste a YouTube playlist URL to generate an AI-powered summary of all 
 │  (HeroSection)  │     │  (Progress)     │     │  + Chat         │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
+
+If timeout (408), auth modal is shown with context message.
+
+### Authenticated Users (Async)
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Paste URL      │────▶│  Job Created    │────▶│  Claim Job      │
+│  (HeroSection)  │     │  (Poll status)  │     │  → Conversation │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+Jobs appear in the floating JobsBanner above the URL input.
 
 ## Components
 
@@ -25,6 +45,7 @@ The landing page component with URL input.
 - URL input with validation
 - Animated submit button (MagicButton)
 - Loading progress indicator with steps
+- **JobsBanner** for authenticated users
 - Responsive design
 
 ### SummaryCard (`src/components/home/SummaryCard.tsx`)
@@ -51,18 +72,30 @@ Container for summary and chat interface.
 
 ### useSummarize (`src/hooks/use-summarize.ts`)
 
-Handles the playlist summarization API call.
+Handles the playlist summarization API call with dual-mode response.
 
 ```typescript
 const { mutate, isPending, data } = useSummarize();
 
 mutate(playlistUrl, {
   onSuccess: (result) => {
-    // result.conversation_id
-    // result.summary_markdown
-    // result.playlist_title
+    if (result.mode === 'sync') {
+      // Immediate summary
+      navigate(result.summary.conversation_id);
+    } else {
+      // Job created - add to jobs list and poll
+      addJob(result.job);
+    }
   }
 });
+```
+
+### useJobs (`src/hooks/use-jobs.ts`)
+
+Manages background jobs for authenticated users.
+
+```typescript
+const { jobs, claimJob, retryJob, deleteJob } = useJobs();
 ```
 
 ### useConversation (`src/hooks/use-conversation.ts`)
@@ -98,7 +131,9 @@ During summarization, progress is shown with animated steps:
 3. "Analyzing content with Gemini..."
 4. "Generating summary..."
 
-## API Response
+## API Response Types
+
+### Sync Mode (Unauthenticated)
 
 ```typescript
 interface SummaryResult {
@@ -109,16 +144,25 @@ interface SummaryResult {
 }
 ```
 
+### Async Mode (Authenticated)
+
+```typescript
+interface JobResponse {
+  id: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  playlist_url: string;
+  error_message: string | null;
+  created_at: string;
+}
+```
+
 ## Conversation Persistence
 
-- **Guest users**: Can generate summaries, but they're not saved
-- **Logged-in users**: Summaries are saved to their account
+- **Guest users**: Can generate summaries via sync mode
+- **Logged-in users**: Get async jobs, summaries saved after claiming
 - **Claiming**: Guest summaries can be claimed after login
 
-## Sidebar Integration
+## Related Documentation
 
-Logged-in users can:
-- View conversation history in sidebar
-- Click to load previous summaries
-- Delete conversations
-- Start new summaries
+- [Background Jobs](./background-jobs.md) - Detailed job system documentation
+
