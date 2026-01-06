@@ -73,4 +73,10 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* iOS Safari scroll optimizations */
+  html, body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
 }

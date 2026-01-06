@@ -66,7 +66,7 @@ export default function Home({ params }: Props) {
     } = useHomeView();
 
     return (
-        <div className="flex h-screen w-full overflow-hidden bg-background dark:bg-black/[0.96] antialiased bg-grid-foreground/[0.02] dark:bg-grid-white/[0.02]">
+        <div className="flex h-screen h-[100dvh] w-full overflow-hidden overscroll-none bg-background dark:bg-black/[0.96] antialiased bg-grid-foreground/[0.02] dark:bg-grid-white/[0.02]">
             {/* Desktop Sidebar */}
             {isAuthenticated && (
                 <div className="hidden md:flex h-full">
@@ -91,7 +91,7 @@ export default function Home({ params }: Props) {
                 />
             )}
 
-            <main ref={mainRef} className="flex-1 h-full overflow-y-auto relative w-full">
+            <main ref={mainRef} className="flex-1 h-full overflow-y-auto overscroll-y-contain touch-pan-y relative w-full">
                 <Spotlight
                     className="-top-40 left-0 md:left-60 md:-top-20 fixed"
                     fill="white"
