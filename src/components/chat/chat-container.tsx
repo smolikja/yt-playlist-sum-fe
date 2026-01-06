@@ -12,16 +12,32 @@ interface ChatContainerProps {
 
 export function ChatContainer({ conversationId, initialMessages, onInteract }: ChatContainerProps) {
     const { messages, isLoading, submitMessage } = useChat({ conversationId, initialMessages });
-    const chatInputRef = useRef<HTMLDivElement>(null);
+    const scrollAnchorRef = useRef<HTMLDivElement>(null);
     const hasScrolledRef = useRef(false);
     const prevMessageCountRef = useRef(messages.length);
 
-    // Scroll helper function
-    const scrollToChatInput = (behavior: ScrollBehavior = "smooth") => {
-        chatInputRef.current?.scrollIntoView({
-            behavior,
-            block: "end",
-        });
+    // Scroll helper function - finds scrollable container by overflow style
+    const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+        const anchor = scrollAnchorRef.current;
+        if (!anchor) return;
+
+        // Find the nearest scrollable ancestor by checking overflow style
+        let scrollContainer: HTMLElement | null = anchor.parentElement;
+        while (scrollContainer) {
+            const style = window.getComputedStyle(scrollContainer);
+            const overflowY = style.overflowY;
+            if (overflowY === "auto" || overflowY === "scroll") {
+                break;
+            }
+            scrollContainer = scrollContainer.parentElement;
+        }
+
+        if (scrollContainer) {
+            scrollContainer.scrollTo({
+                top: scrollContainer.scrollHeight,
+                behavior,
+            });
+        }
     };
 
     // Initial scroll: scroll to chat input once after mount if there are messages
@@ -31,7 +47,7 @@ export function ChatContainer({ conversationId, initialMessages, onInteract }: C
 
         // Wait for animations to complete (0.5s duration + 0.2s delay = 0.7s)
         const timer = setTimeout(() => {
-            scrollToChatInput("smooth");
+            scrollToBottom("smooth");
             hasScrolledRef.current = true;
         }, 750);
 
@@ -43,7 +59,7 @@ export function ChatContainer({ conversationId, initialMessages, onInteract }: C
         const messageCountChanged = messages.length !== prevMessageCountRef.current;
 
         if (messageCountChanged && messages.length > 0) {
-            scrollToChatInput("smooth");
+            scrollToBottom("smooth");
         }
 
         prevMessageCountRef.current = messages.length;
@@ -52,7 +68,7 @@ export function ChatContainer({ conversationId, initialMessages, onInteract }: C
     // Scroll when AI starts thinking (isLoading becomes true)
     useEffect(() => {
         if (isLoading) {
-            scrollToChatInput("smooth");
+            scrollToBottom("smooth");
         }
     }, [isLoading]);
 
@@ -65,13 +81,13 @@ export function ChatContainer({ conversationId, initialMessages, onInteract }: C
         >
             <div className="flex flex-col gap-6">
                 <MessageList messages={messages} isLoading={isLoading} />
-                <div ref={chatInputRef}>
-                    <ChatInput
-                        onSend={submitMessage}
-                        isLoading={isLoading}
-                        onInteract={onInteract}
-                    />
-                </div>
+                <ChatInput
+                    onSend={submitMessage}
+                    isLoading={isLoading}
+                    onInteract={onInteract}
+                />
+                {/* Scroll anchor - must be at the very end */}
+                <div ref={scrollAnchorRef} aria-hidden="true" />
             </div>
         </motion.div>
     );
