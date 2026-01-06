@@ -43,7 +43,7 @@ export function DetailView({
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 20, filter: "blur(10px)" }}
             transition={{ duration: 0.35, ease: "easeInOut", delay: 0.1 }}
-            className="w-full max-w-4xl mx-auto pb-10"
+            className="w-full max-w-4xl mx-auto"
         >
             {isLoading && !isJustSummarized ? (
                 <div className="flex h-64 items-center justify-center">
