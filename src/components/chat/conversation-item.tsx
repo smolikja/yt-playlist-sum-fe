@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useDeleteConversation } from "@/hooks/use-conversations";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
 
 interface ConversationItemProps {
@@ -41,17 +41,45 @@ export function ConversationItem({ conversation, isActive, onClick, onDelete }: 
     });
   };
 
+  // Track touch start position to distinguish scroll from tap
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+
+    const touch = e.changedTouches[0];
+    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+
+    // Only trigger click if finger movement was minimal (tap, not scroll)
+    const TAP_THRESHOLD = 10; // pixels
+    if (deltaX < TAP_THRESHOLD && deltaY < TAP_THRESHOLD) {
+      e.preventDefault();
+      onClick();
+    }
+
+    touchStartRef.current = null;
+  };
+
   return (
     <motion.div
       layout
       onClick={onClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       className={cn(
-        "group relative w-full flex flex-col items-start gap-2 p-3 rounded-lg border transition-all duration-300 text-left cursor-pointer pr-8",
+        "group relative w-full flex flex-col items-start gap-2 p-3 rounded-lg border transition-all duration-200 text-left cursor-pointer pr-8 touch-manipulation select-none",
+        "active:scale-[0.98] active:opacity-90",
         isActive
           ? "bg-muted dark:bg-neutral-800/80 border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
-          : "bg-muted/30 dark:bg-neutral-900/30 border-border/50 hover:bg-muted/60 dark:hover:bg-neutral-800/50 hover:border-border"
+          : "bg-muted/30 dark:bg-neutral-900/30 border-border/50 md:hover:bg-muted/60 md:dark:hover:bg-neutral-800/50 md:hover:border-border"
       )}
     >
       {/* Active Indicator Line */}
@@ -84,8 +112,9 @@ export function ConversationItem({ conversation, isActive, onClick, onDelete }: 
 
       {/* Delete Action */}
       <div
-        className="absolute top-3 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20"
+        className="absolute top-3 right-2 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-200 z-20"
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
       >
         <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
           <AlertDialogTrigger asChild>

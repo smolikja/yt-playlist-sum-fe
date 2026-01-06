@@ -28,9 +28,22 @@ export function useScrollDirection(
             return;
         }
 
-        // Scrolling up = show, scrolling down = hide
-        const isScrollingUp = currentScrollY < lastScrollY;
-        setIsVisible(isScrollingUp);
+        const scrollDelta = currentScrollY - lastScrollY;
+
+        // Only react to significant scroll movements (debounce small movements)
+        if (Math.abs(scrollDelta) < 5) {
+            return;
+        }
+
+        // Scrolling up = show and keep visible, scrolling down = hide
+        if (scrollDelta < 0) {
+            // Scrolling up - show header
+            setIsVisible(true);
+        } else {
+            // Scrolling down - hide header
+            setIsVisible(false);
+        }
+
         setLastScrollY(currentScrollY);
     }, [lastScrollY, threshold, scrollContainerRef]);
 
