@@ -108,7 +108,7 @@ export function ChatInput({ onSend, isLoading, onInteract }: ChatInputProps) {
                             disabled={isLoading}
                             maxLength={maxLength}
                             className={cn(
-                                "flex h-12 w-full rounded-2xl py-2 text-sm shadow-2xl transition-all",
+                                "flex h-12 w-full rounded-2xl py-2 text-base shadow-2xl transition-all",
                                 "pl-12 pr-14", // Padding for left toggle and right send button
                                 "placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50",
                                 "border-transparent bg-transparent",
